@@ -1,0 +1,49 @@
+# Author:  PH01L
+# Email:   phoil@osrsbox.com
+# Website: https://www.osrsbox.com
+#
+# Description:
+# Dockerfile for osrsbox-api
+#
+# Copyright (c) 2020, PH01L
+# 
+###############################################################################
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+###############################################################################
+
+version: '3'
+services:
+  eve:
+    container_name: osrsbox-api-eve
+    build: .
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo/db
+      - MONGO_PORT=27017
+      - MONGO_USERNAME=someusername
+      - MONGO_PASSWORD=somepassword
+      - PORT=5000
+
+  mongo:
+    container_name: osrsbox-api-mongo
+    image: mongo:latest
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=osrsbox-db
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
