@@ -24,21 +24,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import os
 
 from eve import Eve
+from eve.io.mongo import Validator
 from eve_swagger import swagger
+from flask_swagger_ui import get_swaggerui_blueprint
 
-# Bind to PORT if defined, otherwise default to 5000.
-if 'PORT' in os.environ:
-    port = int(os.environ.get('PORT'))
-    host = '0.0.0.0'
+
+class MyValidator(Validator):
+    def _validate_description(self, description, field, value):
+        """ {'type': 'string'} """
+        # Accept description attribute, used for swagger doc generation
+        pass
+
+    def _validate_example(self, description, field, value):
+        """ {'type': 'string'} """
+        # Accept an example attribute, used for swagger doc generation
+        pass
+
+
+# Set port/host for production/development
+if "PORT" in os.environ:
+    port = int(os.environ.get("PORT"))
+    host = "0.0.0.0"
 else:
     port = 5000
-    host = '127.0.0.1'
+    host = "127.0.0.1"
 
-app = Eve()
-app.register_blueprint(swagger)
-
-# required. See http://swagger.io/specification/#infoObject for details.
-app.config["SWAGGER_INFO"] = {
+# Set Swagger UI configuration
+SWAGGER_CONFIG = {
     "title": "osrsbox-api",
     "version": "1.0",
     "description": "An open, free, complete and up-to-date RESTful API for Old School RuneScape (OSRS) items, monsters and grand exchange data",
@@ -53,9 +65,33 @@ app.config["SWAGGER_INFO"] = {
     }
 }
 
-app.config['SWAGGER_HOST'] = host
+# Set URL for Swagger UI
+SWAGGER_URL = "/api/docs"
+
+# Set URL for Swagger generation
+API_URL = "http://127.0.0.1:5000/api-docs"
+
+# Using flask_swagger_ui, create Swagger UI blueprint
+swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL,
+                                              API_URL,
+                                              config=SWAGGER_CONFIG,
+                                              )
+
+# Initialize Eve app, and attach modified Validator
+app = Eve(validator=MyValidator)
+
+# Using eve-swagger, generate /api-docs and JSON for Swagger UI
+app.register_blueprint(swagger)
+
+# Using flask_swagger_ui, generate Swagger UI web interface
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+# Set Swagger UI information to the specific configuration
+app.config["SWAGGER_INFO"] = SWAGGER_CONFIG
+
+# Set the Swagger host, to enable running of Swagger UI API calls
+app.config["SWAGGER_HOST"] = "127.0.0.1:5000"
 
 
 if __name__ == "__main__":
     app.run(host=host, port=port)
-

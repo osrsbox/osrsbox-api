@@ -38,11 +38,8 @@ MONGO_DBNAME = "osrsbox-db"
 # Set api/ as API endpoint
 URL_PREFIX = "api"
 
-# Set ID in MongoDB
-ID_FIELD = "id"
-
 # Set API version
-# API_VERSION = "v1"
+API_VERSION = "v1"
 
 # Set renderer to JSON for API output
 RENDERERS = ["eve.render.JSONRenderer", ]
@@ -50,8 +47,8 @@ RENDERERS = ["eve.render.JSONRenderer", ]
 # Enable GET, POST, and DELETE for collections
 RESOURCE_METHODS = ["GET", "POST", "DELETE"]
 
-# Enable GET, PATCH, PUT and DELETE for items in collections
-ITEM_METHODS = ["GET", "PATCH", "PUT", "DELETE"]
+# Enable GET, PUT and DELETE for items in collections
+ITEM_METHODS = ["GET", "PUT", "DELETE"]
 
 # Enable standard client cache directive for all resources
 CACHE_CONTROL = "max-age=20"
@@ -61,55 +58,63 @@ CACHE_EXPIRES = 20
 schema_file_path = "schema-items.json"
 with open(schema_file_path) as f:
     item_schema_data = json.load(f)
-item_schema_data = item_schema_data["properties"]
-for k, v in item_schema_data.items():
-    # Check schema for lists, and extract first entry
-    if isinstance(v["type"], list):
-        item_schema_data[k]["type"] = v["type"][0]
 
 # Load osrsbox-db schema-monsters.json file, and get the properties key
 schema_file_path = "schema-monsters.json"
 with open(schema_file_path) as f:
     monster_schema_data = json.load(f)
-monster_schema_data = monster_schema_data["properties"]
-for k, v in monster_schema_data.items():
-    # Check schema for lists, and extract first entry
-    if isinstance(v["type"], list):
-        monster_schema_data[k]["type"] = v["type"][0]
 
 # Define item resource
 items = {
-    # Title tag
-    "item_title": "items",
-
-    # Provide addition item.name lookup
+    # Provide additional item.id lookup
     "additional_lookup": {
-        # Allow any character in an item name
-        "url": 'regex("[ &\'()+\\-\\./0-9a-zA-Z]+")',
-        "field": "name"
+        # Allow any 5 digit number
+        "url": 'regex("[0-9]{1,5}")',
+        "field": "id"
     },
 
-    # Specify JSON schema
+    # Specify schema
     "schema": item_schema_data,
+}
+
+weapons = {
+    # Specify schema
+    "schema": item_schema_data,
+
+    # Specify items database collection as datasource
+    "datasource": {
+        "source": "items",
+        "filter": {"equipable_weapon": True}
+    },
+}
+
+equipment = {
+    # Specify schema
+    "schema": item_schema_data,
+
+    # Specify items database collection as datasource
+    "datasource": {
+        "source": "items",
+        "filter": {"equipable_by_player": True}
+    },
 }
 
 # Define monsters resource
 monsters = {
-    # Title tag
-    "item_title": "monsters",
-
-    # Provide addition monster.name lookup
+    # Provide additional monster.id lookup
     "additional_lookup": {
-        # Allow any character in a monster name
-        "url": 'regex("[ \'()\\-\\.0-9a-zA-Z]+")',
-        "field": "name"
+        # Allow any 5 digit number
+        "url": 'regex("[0-9]{1,5}")',
+        "field": "id"
     },
 
-    # Specify JSON schema
+    # Specify schema
     "schema": monster_schema_data,
 }
 
 DOMAIN = {
     "items": items,
+    "weapons": weapons,
+    "equipment": equipment,
     "monsters": monsters,
 }
