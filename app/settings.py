@@ -41,6 +41,9 @@ URL_PREFIX = "api"
 # Set API version
 API_VERSION = "v1"
 
+# Set id to the primary field
+ID_FIELD = "id"
+
 # Set renderer to JSON for API output
 RENDERERS = ["eve.render.JSONRenderer", ]
 
@@ -55,12 +58,12 @@ CACHE_CONTROL = "max-age=20"
 CACHE_EXPIRES = 20
 
 # Load osrsbox-db schema-items.json file, and get the properties key
-schema_file_path = "schema-items.json"
+schema_file_path = "schemas/schema-items.json"
 with open(schema_file_path) as f:
     item_schema_data = json.load(f)
 
 # Load osrsbox-db schema-monsters.json file, and get the properties key
-schema_file_path = "schema-monsters.json"
+schema_file_path = "schemas/schema-monsters.json"
 with open(schema_file_path) as f:
     monster_schema_data = json.load(f)
 

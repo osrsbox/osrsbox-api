@@ -1,0 +1,3 @@
+[submodule "app/schemas"]
+	path = app/schemas
+	url = https://github.com/osrsbox/schemas.git
