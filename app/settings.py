@@ -62,11 +62,6 @@ schema_file_path = "schemas/schema-items.json"
 with open(schema_file_path) as f:
     item_schema_data = json.load(f)
 
-# Load osrsbox-db schema-monsters.json file, and get the properties key
-schema_file_path = "schemas/schema-monsters.json"
-with open(schema_file_path) as f:
-    monster_schema_data = json.load(f)
-
 # Define item resource
 items = {
     # Provide additional item.id lookup
@@ -102,6 +97,11 @@ equipment = {
     },
 }
 
+# Load osrsbox-db schema-monsters.json file, and get the properties key
+schema_file_path = "schemas/schema-monsters.json"
+with open(schema_file_path) as f:
+    monster_schema_data = json.load(f)
+
 # Define monsters resource
 monsters = {
     # Provide additional monster.id lookup
@@ -115,9 +115,28 @@ monsters = {
     "schema": monster_schema_data,
 }
 
+# Load osrsbox-db schema-prayers.json file, and get the properties key
+schema_file_path = "schemas/schema-prayers.json"
+with open(schema_file_path) as f:
+    prayer_schema_data = json.load(f)
+
+# Define prayers resource
+prayers = {
+    # Provide additional prayer.id lookup
+    "additional_lookup": {
+        # Allow any 5 digit number
+        "url": 'regex("[0-9]{1}")',
+        "field": "id"
+    },
+
+    # Specify schema
+    "schema": prayer_schema_data,
+}
+
 DOMAIN = {
     "items": items,
     "weapons": weapons,
     "equipment": equipment,
     "monsters": monsters,
+    "prayers": prayers,
 }
