@@ -41,13 +41,21 @@ class MyValidator(Validator):
         pass
 
 
-# Set port/host for production/development
-if "PORT" in os.environ:
-    port = int(os.environ.get("PORT"))
+# Start by configuring environment (production/development)
+environment = "dev"
+
+if "APP_ENV" in os.environ:
+    environment = os.environ["APP_ENV"]
+
+if environment == "prod":
     host = "0.0.0.0"
-else:
     port = 5000
+    # Set URL for Swagger generation
+    API_URL = f"http://{host}/api-docs"
+else:
     host = "127.0.0.1"
+    port = 5000
+    API_URL = f"http://{host}:{port}/api-docs"
 
 # Set Swagger UI configuration
 SWAGGER_CONFIG = {
@@ -68,9 +76,6 @@ SWAGGER_CONFIG = {
 # Set URL for Swagger UI
 SWAGGER_URL = "/api/docs"
 
-# Set URL for Swagger generation
-API_URL = "http://127.0.0.1:5000/api-docs"
-
 # Using flask_swagger_ui, create Swagger UI blueprint
 swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL,
                                               API_URL,
@@ -90,7 +95,10 @@ app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 app.config["SWAGGER_INFO"] = SWAGGER_CONFIG
 
 # Set the Swagger host, to enable running of Swagger UI API calls
-app.config["SWAGGER_HOST"] = "127.0.0.1:5000"
+if environment == "prod":
+    app.config["SWAGGER_HOST"] = f"{host}"
+else:
+    app.config["SWAGGER_HOST"] = f"{host}:{port}"
 
 
 if __name__ == "__main__":

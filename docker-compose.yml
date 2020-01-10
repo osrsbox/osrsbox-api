@@ -19,31 +19,77 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
-
 version: '3'
 services:
   eve:
+    build:
+      context: app
+      dockerfile: Dockerfile
     container_name: osrsbox-api-eve
-    build: .
+    image: python:3.7-slim-buster
+    restart: unless-stopped
+    environment:
+      APP_ENV: "prod"
+      APP_DEBUG: "False"
+      APP_PORT: 5000
+      MONGO_URI: "mongodb://mongo/db"
+      MONGO_PORT: 27017
+      MONGO_USERNAME: someusername
+      MONGO_PASSWORD: somepassword
+    volumes:
+      - appdata:/var/www
     depends_on:
       - mongo
-    restart: unless-stopped
-    ports:
-      - "5000:5000"
-    environment:
-      - MONGO_URI=mongodb://mongo/db
-      - MONGO_PORT=27017
-      - MONGO_USERNAME=someusername
-      - MONGO_PASSWORD=somepassword
-      - PORT=5000
+    networks:
+      - frontend
+      - backend
 
   mongo:
     container_name: osrsbox-api-mongo
     image: mongo:latest
     restart: unless-stopped
-    ports:
-      - 27017:27017
     environment:
-      - MONGO_INITDB_DATABASE=osrsbox-db
+      MONGO_INITDB_DATABASE: osrsbox-db
+      MONGODB_DATA_DIR: /data/db
+      MONDODB_LOG_DIR: /dev/null
     volumes:
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongodata:/data/db
+    networks:
+      - backend
+
+  nginx:
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    container_name: osrsbox-api-nginx
+    image: nginx:latest
+    restart: unless-stopped
+    environment:
+      APP_ENV: "prod"
+      APP_NAME: "webserver"
+      APP_DEBUG: "false"
+      SERVICE_NAME: "webserver"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - nginxdata:/var/log/nginx
+    depends_on:
+      - eve
+    networks:
+      - frontend
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+volumes:
+  mongodata:
+    driver: local
+  appdata:
+    driver: local
+  nginxdata:
+    driver: local

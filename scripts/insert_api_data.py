@@ -29,7 +29,7 @@ from osrsbox import monsters_api
 from pymongo import MongoClient
 
 # Specify the items API endpoint
-API_ENDPOINT = "http://127.0.0.1:5000/api/v1"
+API_ENDPOINT = "http://0.0.0.0/api"
 
 # Specify the JSON content type for HTTP POSTS
 HEADERS = {'Content-type': 'application/json'}
@@ -40,12 +40,8 @@ for item in all_db_items:
     # Make a dictionary from the ItemProperties object
     item_dict = item.construct_json()
 
-    if int(item_dict["id"]) < 9764:
-        continue
-
     # Dump dictionary to JSON for API parameter
     item_json = json.dumps(item_dict)
-
 
     # Send POST request
     r = requests.post(url=API_ENDPOINT + "/items",
@@ -54,16 +50,13 @@ for item in all_db_items:
 
     # Parse response to a dictionary
     r = json.loads(r.text)
-    print(r)
 
     # If error, send PUT request
     if r["_status"] == "ERR":
-        print("PUT")
-        testapi = API_ENDPOINT + f"/items/{item_dict['id']}"
-        print(testapi)
-        r = requests.put(url=testapi,
-                           data=item_json,
-                           headers=HEADERS)
+        print(r)
+        r = requests.put(url=API_ENDPOINT + f"/items/{item_dict['id']}",
+                         data=item_json,
+                         headers=HEADERS)
 
         # Parse response to a dictionary
         r = json.loads(r.text)
@@ -94,9 +87,10 @@ for monster in all_db_monsters:
 
     # If error, send PUT request
     if r["_status"] == "ERR":
-        r = requests.put(url=API_ENDPOINT + "/monsters",
-                           data=item_json,
-                           headers=HEADERS)
+        print(r)
+        r = requests.put(url=API_ENDPOINT + f"/monsters/{monster_dict['id']}",
+                         data=item_json,
+                         headers=HEADERS)
 
         # Parse response to a dictionary
         r = json.loads(r.text)
@@ -104,7 +98,7 @@ for monster in all_db_monsters:
     if r["_status"] == "ERR":
         print(">>> Data insertion error... Exiting.")
     else:
-        print(item_dict["id"], r["_updated"], r["_status"])
+        print(monster_dict["id"], r["_updated"], r["_status"])
 
 # Establish a MongoDB connection
 username = "someusername"

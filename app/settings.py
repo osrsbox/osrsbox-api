@@ -38,8 +38,8 @@ MONGO_DBNAME = "osrsbox-db"
 # Set api/ as API endpoint
 URL_PREFIX = "api"
 
-# Set API version
-API_VERSION = "v1"
+# # Set API version
+# API_VERSION = "v1"
 
 # Set id to the primary field
 ID_FIELD = "id"
