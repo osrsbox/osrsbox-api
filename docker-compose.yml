@@ -53,7 +53,7 @@ services:
       MONGODB_DATA_DIR: /data/db
       MONDODB_LOG_DIR: /dev/null
     volumes:
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongo/create-database.js:/docker-entrypoint-initdb.d/create-database.js:ro
       - mongodata:/data/db
     networks:
       - backend
