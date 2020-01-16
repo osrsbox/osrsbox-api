@@ -52,7 +52,7 @@ sudo apt install docker-ce
 Check status:
 
 ```
-sudo systemtctl status docker
+sudo systemctl status docker
 ```
 
 Add current user to `docker` group to allow user to run Docker"

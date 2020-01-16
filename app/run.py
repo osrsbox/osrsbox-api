@@ -22,8 +22,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 """
 import os
+import hashlib
 
 from eve import Eve
+from eve.auth import BasicAuth
 from eve.io.mongo import Validator
 from eve_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -41,6 +43,16 @@ class MyValidator(Validator):
         pass
 
 
+class SCryptAuth(BasicAuth):
+    def check_auth(self, username, password, allowed_roles, resource, method):
+        accounts = app.data.driver.db['accounts']
+        account = accounts.find_one({'username': username})
+        password = password.encode('utf-8')
+        pwdhash = hashlib.scrypt(password)
+        return account and \
+            bcrypt.hashpw(password, account['password']) == account['password']
+
+
 # Start by configuring environment (production/development)
 environment = "dev"
 
@@ -50,7 +62,6 @@ if "APP_ENV" in os.environ:
 if environment == "prod":
     host = "0.0.0.0"
     port = 5000
-    # Set URL for Swagger generation
     API_URL = f"http://{host}/api-docs"
 else:
     host = "127.0.0.1"
@@ -83,6 +94,9 @@ swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL,
                                               )
 
 # Initialize Eve app, and attach modified Validator
+# app = Eve(validator=MyValidator,
+#           auth=SCryptAuth)
+
 app = Eve(validator=MyValidator)
 
 # Using eve-swagger, generate /api-docs and JSON for Swagger UI

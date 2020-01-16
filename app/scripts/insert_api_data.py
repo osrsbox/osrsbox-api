@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 """
 import json
+import itertools
 from typing import Dict
 from typing import Tuple
 
@@ -66,6 +67,8 @@ def perform_api_put(api_endpoint: str, data: Dict) -> Tuple:
 
 
 def insert_api_data(db_type: str):
+    print(f">>> Inserting {db_type} data...")
+
     # Insert database contents using osrsbox-api
     if db_type == "items":
         all_db_entries = items_api.load()
@@ -74,40 +77,59 @@ def insert_api_data(db_type: str):
     elif db_type == "prayers":
         all_db_entries = prayers_api.load()
 
-    count = 0
-    print(f">>> Inserting {db_type} data...")
+    all_entries = list()
+    bulk_entries = list()
+
     for entry in all_db_entries:
-        # Make a dictionary from the ItemProperties object
-        entry_dict = entry.construct_json()
+        # Append to a list of all entries
+        all_entries.append(entry)
 
-        # Dump dictionary to JSON for API parameter
-        entry_json = json.dumps(entry_dict)
+    print(len(all_entries))
 
-        # Send POST request
+    for db_entries in itertools.zip_longest(*[iter(all_db_entries)] * 50):
+        # Remove None entries from the list
+        db_entries = filter(None, db_entries)
+        # Cast from filter object to list
+        db_entries = list(db_entries)
+        # Append to list of bulk entries
+        bulk_entries.append(db_entries)
+
+    for i, block in enumerate(bulk_entries):
+        print(f"  > Processed: {i*50}")
+        to_insert = list()
+        for entry in block:
+            # Make a dictionary from the *Properties object
+            entry_dict = entry.construct_json()
+            # Dump dictionary to JSON for API parameter
+            entry_json = json.dumps(entry_dict)
+            # Append to the to_insert list   
+            to_insert.append(entry_json)
+
+        # Convert list to JSON list
+        to_insert = json.dumps(to_insert)
+
+        # Send POST request, or PUT request if that fails
         status, response = perform_api_post(API_ENDPOINT + f"/{db_type}",
-                                            entry_json)
+                                            to_insert)
 
         if response["_status"] == "ERR":
             status, response = perform_api_put(API_ENDPOINT + f"/{db_type}",
-                                               entry_json)
+                                            to_insert)
 
         if response["_status"] == "ERR":
             print(response)
             print(">>> Data insertion error... Exiting.")
             quit()
 
-        count += 1
-        print(f"  > Processed: {count:05} of {len(all_db_entries)}", end="\r", flush=True)
-
 
 if __name__ == "__main__":
     # Loop three database types
     dbs = ["items", "monsters", "prayers"]
     for db_type in dbs:
-        # if db_type == "items":
-        #     continue
+        if db_type == "items":
+            continue
         # if db_type == "monsters":
         #     continue
-        # if db_type == "prayers":
-        #     continue
+        if db_type == "prayers":
+            continue
         insert_api_data(db_type)

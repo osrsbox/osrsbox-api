@@ -53,6 +53,10 @@ RESOURCE_METHODS = ["GET", "POST", "DELETE"]
 # Enable GET, PUT and DELETE for items in collections
 ITEM_METHODS = ["GET", "PUT", "DELETE"]
 
+# # Lock down all endpoints, apart from GET requests
+# PUBLIC_METHODS = ['GET']
+# PUBLIC_ITEM_METHODS = ['GET']
+
 # Enable standard client cache directive for all resources
 CACHE_CONTROL = "max-age=20"
 CACHE_EXPIRES = 20
