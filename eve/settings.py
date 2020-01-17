@@ -36,7 +36,7 @@ MONGO_AUTH_SOURCE = "osrsbox-db"
 MONGO_DBNAME = "osrsbox-db"
 
 # Set api/ as API endpoint
-URL_PREFIX = "api"
+URL_PREFIX = ""
 
 # # Set API version
 # API_VERSION = "v1"

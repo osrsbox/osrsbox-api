@@ -60,9 +60,9 @@ if "APP_ENV" in os.environ:
     environment = os.environ["APP_ENV"]
 
 if environment == "prod":
-    host = "0.0.0.0"
+    host = "api.osrsbox.com"
     port = 5000
-    API_URL = f"http://{host}/api-docs"
+    API_URL = f"https://{host}/api-docs"
 else:
     host = "127.0.0.1"
     port = 5000
@@ -73,7 +73,7 @@ SWAGGER_CONFIG = {
     "title": "osrsbox-api",
     "version": "1.0",
     "description": "An open, free, complete and up-to-date RESTful API for Old School RuneScape (OSRS) items, monsters and grand exchange data",
-    "termsOfService": "TODO: Terms of Service",
+    "termsOfService": "Terms of Service",
     "contact": {
         "name": "PH01L",
         "url": "https://www.osrsbox.com"
@@ -81,11 +81,12 @@ SWAGGER_CONFIG = {
     "license": {
         "name": "GNU General Public License v3.0",
         "url": "https://github.com/osrsbox/osrsbox-api/blob/master/LICENSE",
-    }
+    },
+    "schemes": ["http", "https"],
 }
 
 # Set URL for Swagger UI
-SWAGGER_URL = "/api/docs"
+SWAGGER_URL = "/swagger"
 
 # Using flask_swagger_ui, create Swagger UI blueprint
 swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL,
