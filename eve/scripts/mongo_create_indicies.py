@@ -21,3 +21,30 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 """
+from pymongo import MongoClient
+
+# Set MongoDB connection configuration
+ip_address = "0.0.0.0"
+port = 27017
+username = "someusername"
+password = "somepassword"
+db_name = "osrsbox-db"
+
+# Initialize MongoDB connection
+print(">>> Connecting to MongoDB....")
+client = MongoClient(f"mongodb://{username}:{password}@{ip_address}:{port}/")
+
+# Load database
+db = client[db_name]
+
+collection_names = [
+    "items",
+    "monsters",
+    "prayers"
+]
+
+# Index each collection
+for collection_name in collection_names:
+    print("  > Indexing:", collection_name)
+    coll = db[collection_name]
+    coll.create_index("id")

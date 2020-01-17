@@ -128,8 +128,8 @@ if __name__ == "__main__":
     for db_type in dbs:
         if db_type == "items":
             continue
-        # if db_type == "monsters":
-        #     continue
+        if db_type == "monsters":
+            continue
         if db_type == "prayers":
             continue
         insert_api_data(db_type)

@@ -82,8 +82,11 @@ SWAGGER_CONFIG = {
         "name": "GNU General Public License v3.0",
         "url": "https://github.com/osrsbox/osrsbox-api/blob/master/LICENSE",
     },
-    "schemes": ["http", "https"],
+    "schemes": ["https"],
 }
+
+if environment != "prod":
+    SWAGGER_CONFIG["schemes"] = ["http"]
 
 # Set URL for Swagger UI
 SWAGGER_URL = "/swagger"
