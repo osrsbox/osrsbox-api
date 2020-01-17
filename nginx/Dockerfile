@@ -25,6 +25,12 @@ LABEL MAINTAINER="PH01L <phoil@osrsbox.com>"
 # Install nginx
 RUN apk --update add nginx
 
+# Install openssl
+RUN apk --update add openssl
+
+# Remove cache to reclaim some space
+RUN rm -rf /var/cache/apk/*
+
 # Link log files to stdout/err to forward to Docker logs
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
@@ -35,11 +41,12 @@ RUN mkdir -p /run/nginx
 
 # Remove the default configuration
 RUN rm -rf /etc/nginx/conf.d/default.conf
-# Remove cache to reclaim some space
-RUN rm -rf /var/cache/apk/*
 
 # Copy the project configuration file
 COPY conf.d/app.conf /etc/nginx/conf.d/app.conf
+
+# Generate strong DHE paramater
+RUN openssl dhparam -out /etc/nginx/certs/dhparam.pem 4096
 
 # Expose ports 80/443 to outside
 EXPOSE 80 443
