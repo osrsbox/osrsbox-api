@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 """
 import os
+import base64
 import hashlib
 
 from eve import Eve
@@ -46,16 +47,35 @@ class MyValidator(Validator):
 class SCryptAuth(BasicAuth):
     def check_auth(self, username, password, allowed_roles, resource, method):
         accounts = app.data.driver.db['accounts']
+
+        # Determine if account exists
         account = accounts.find_one({'username': username})
-        password = password.encode('utf-8')
-        pwdhash = hashlib.scrypt(password)
-        return account and \
-            bcrypt.hashpw(password, account['password']) == account['password']
+        if not account:
+            return False
+
+        # Fetch pass/salt from environment variables
+        project_password = os.getenv("PROJECT_PASSWORD")
+        project_salt = os.getenv("PROJECT_SALT")
+
+        # Encode pass/salt to bytes
+        password = project_password.encode('utf-8')
+        salt = project_salt.encode('utf-8')
+
+        # Hash pass/salt using scrypt
+        password_hashed = hashlib.scrypt(password,
+                                         salt=salt,
+                                         n=2**14, r=8, p=1)
+
+        # Convert hashed pass to base64, then convert to string
+        password_base64 = base64.b64encode(password_hashed)
+        password_base64 = password_base64.decode()
+
+        # Check hashes match
+        return password_base64 == account['password']
 
 
 # Start by configuring environment (production/development)
 environment = "dev"
-
 if "APP_ENV" in os.environ:
     environment = os.environ["APP_ENV"]
 
@@ -89,7 +109,7 @@ if environment != "prod":
     SWAGGER_CONFIG["schemes"] = ["http"]
 
 # Set URL for Swagger UI
-SWAGGER_URL = "/swagger"
+SWAGGER_URL = "/swaggerui"
 
 # Using flask_swagger_ui, create Swagger UI blueprint
 swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL,
@@ -97,17 +117,16 @@ swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL,
                                               config=SWAGGER_CONFIG,
                                               )
 
-# Initialize Eve app, and attach modified Validator
-# app = Eve(validator=MyValidator,
-#           auth=SCryptAuth)
+# Initialize Eve app, and attach modified validator and auth
+app = Eve(validator=MyValidator,
+          auth=SCryptAuth)
 
-app = Eve(validator=MyValidator)
-
-# Using eve-swagger, generate /api-docs and JSON for Swagger UI
+# Using eve-swagger, generate /api-docs JSON for Swagger UI
 app.register_blueprint(swagger)
 
 # Using flask_swagger_ui, generate Swagger UI web interface
-app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+app.register_blueprint(swaggerui_blueprint,
+                       url_prefix=SWAGGER_URL)
 
 # Set Swagger UI information to the specific configuration
 app.config["SWAGGER_INFO"] = SWAGGER_CONFIG

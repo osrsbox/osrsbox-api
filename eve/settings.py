@@ -30,16 +30,13 @@ DEBUG = True
 # Set global MongoDB configuration
 MONGO_HOST = os.getenv("MONGO_URI")
 MONGO_PORT = int(os.getenv("MONGO_PORT"))
-MONGO_USERNAME = os.getenv("MONGO_USERNAME")
-MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
+MONGO_USERNAME = os.getenv("PROJECT_USERNAME")
+MONGO_PASSWORD = os.getenv("PROJECT_PASSWORD")
 MONGO_AUTH_SOURCE = "osrsbox-db"
 MONGO_DBNAME = "osrsbox-db"
 
 # Set api/ as API endpoint
 URL_PREFIX = ""
-
-# # Set API version
-# API_VERSION = "v1"
 
 # Set id to the primary field
 ID_FIELD = "id"
@@ -48,14 +45,14 @@ ID_FIELD = "id"
 RENDERERS = ["eve.render.JSONRenderer", ]
 
 # Enable GET, POST, and DELETE for collections
-RESOURCE_METHODS = ["GET", "POST", "DELETE"]
+RESOURCE_METHODS = ["GET", "POST"]
 
 # Enable GET, PUT and DELETE for items in collections
-ITEM_METHODS = ["GET", "PUT", "DELETE"]
+ITEM_METHODS = ["GET", "PUT"]
 
-# # Lock down all endpoints, apart from GET requests
-# PUBLIC_METHODS = ['GET']
-# PUBLIC_ITEM_METHODS = ['GET']
+# Lock down all endpoints, apart from GET requests
+PUBLIC_METHODS = ['GET']
+PUBLIC_ITEM_METHODS = ['GET']
 
 # Enable standard client cache directive for all resources
 CACHE_CONTROL = "max-age=20"

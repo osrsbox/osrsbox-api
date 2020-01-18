@@ -21,7 +21,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 """
+import os
 import json
+import base64
+import hashlib
 import itertools
 from typing import Dict
 from typing import Tuple
@@ -32,17 +35,28 @@ from osrsbox import monsters_api
 from osrsbox import prayers_api
 
 # Specify the items API endpoint
-API_ENDPOINT = "http://0.0.0.0/api"
+API_ENDPOINT = "http://0.0.0.0:5000"
+PROJECT_USERNAME = os.getenv("PROJECT_USERNAME")
+PROJECT_PASSWORD = os.getenv("PROJECT_PASSWORD")
+PROJECT_SALT = os.getenv("PROJECT_SALT")
+
+# Start by generating scrypt hash
+password = PROJECT_PASSWORD.encode("utf-8")
+salt = PROJECT_SALT.encode("utf-8")
+password_hashed = hashlib.scrypt(password, salt=salt, n=2**14, r=8, p=1)
+password_base64 = base64.b64encode(password_hashed)
+PASSWORD = password_base64.decode()
 
 # Specify the JSON content type for HTTP POSTS
-HEADERS = {'Content-type': 'application/json'}
+HEADERS = {"Content-type": "application/json"}
 
 
 def perform_api_post(api_endpoint: str, data: Dict) -> Tuple:
     # Perform post request
     r = requests.post(url=api_endpoint,
                       data=data,
-                      headers=HEADERS)
+                      headers=HEADERS,
+                      auth=(PROJECT_USERNAME, PASSWORD))
 
     # Determine HTTP response status
     status = r.status_code
@@ -56,7 +70,8 @@ def perform_api_put(api_endpoint: str, data: Dict) -> Tuple:
     # Perform put request
     r = requests.post(url=api_endpoint,
                       data=data,
-                      headers=HEADERS)
+                      headers=HEADERS,
+                      auth=(PROJECT_USERNAME, PASSWORD))
 
     # Determine HTTP response status
     status = r.status_code
@@ -84,8 +99,6 @@ def insert_api_data(db_type: str):
         # Append to a list of all entries
         all_entries.append(entry)
 
-    print(len(all_entries))
-
     for db_entries in itertools.zip_longest(*[iter(all_db_entries)] * 50):
         # Remove None entries from the list
         db_entries = filter(None, db_entries)
@@ -102,7 +115,7 @@ def insert_api_data(db_type: str):
             entry_dict = entry.construct_json()
             # Dump dictionary to JSON for API parameter
             entry_json = json.dumps(entry_dict)
-            # Append to the to_insert list   
+            # Append to the to_insert list
             to_insert.append(entry_json)
 
         # Convert list to JSON list
@@ -114,7 +127,7 @@ def insert_api_data(db_type: str):
 
         if response["_status"] == "ERR":
             status, response = perform_api_put(API_ENDPOINT + f"/{db_type}",
-                                            to_insert)
+                                               to_insert)
 
         if response["_status"] == "ERR":
             print(response)
@@ -126,10 +139,10 @@ if __name__ == "__main__":
     # Loop three database types
     dbs = ["items", "monsters", "prayers"]
     for db_type in dbs:
-        if db_type == "items":
-            continue
-        if db_type == "monsters":
-            continue
-        if db_type == "prayers":
-            continue
+        # if db_type == "items":
+        #     continue
+        # if db_type == "monsters":
+        #     continue
+        # if db_type == "prayers":
+        #     continue
         insert_api_data(db_type)
