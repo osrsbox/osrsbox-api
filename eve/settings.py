@@ -77,6 +77,13 @@ items = {
 }
 
 weapons = {
+    # Provide additional item.id lookup
+    "additional_lookup": {
+        # Allow any 5 digit number
+        "url": 'regex("[0-9]{1,5}")',
+        "field": "id"
+    },
+
     # Specify schema
     "schema": item_schema_data,
 
@@ -88,6 +95,13 @@ weapons = {
 }
 
 equipment = {
+    # Provide additional item.id lookup
+    "additional_lookup": {
+        # Allow any 5 digit number
+        "url": 'regex("[0-9]{1,5}")',
+        "field": "id"
+    },
+
     # Specify schema
     "schema": item_schema_data,
 
