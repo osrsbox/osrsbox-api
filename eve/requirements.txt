@@ -9,9 +9,9 @@ Flask==1.1.1
 flask-swagger-ui==3.20.9
 idna==2.8
 itsdangerous==1.1.0
-Jinja2==2.10.3
+Jinja2==2.11.1
 MarkupSafe==1.1.1
-osrsbox==1.2.32
+osrsbox==1.2.33
 pymongo==3.10.1
 requests==2.22.0
 simplejson==3.17.0
