@@ -41,6 +41,7 @@ RUN rm -rf /etc/nginx/conf.d/default.conf
 
 # Copy the project configuration file
 COPY conf.d/app.conf /etc/nginx/conf.d/app.conf
+# COPY conf.d/app.dev.conf /etc/nginx/conf.d/app.dev.conf
 
 # Expose ports 80/443 to outside
 EXPOSE 80 443

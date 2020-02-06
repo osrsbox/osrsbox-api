@@ -86,7 +86,7 @@ if environment == "prod":
 else:
     host = "127.0.0.1"
     port = 5000
-    API_URL = f"http://{host}:{port}/api-docs"
+    API_URL = f"http://{host}/api-docs"
 
 # Set Swagger UI configuration
 SWAGGER_CONFIG = {
@@ -132,10 +132,7 @@ app.register_blueprint(swaggerui_blueprint,
 app.config["SWAGGER_INFO"] = SWAGGER_CONFIG
 
 # Set the Swagger host, to enable running of Swagger UI API calls
-if environment == "prod":
-    app.config["SWAGGER_HOST"] = f"{host}"
-else:
-    app.config["SWAGGER_HOST"] = f"{host}:{port}"
+app.config["SWAGGER_HOST"] = f"{host}"
 
 
 if __name__ == "__main__":
