@@ -4,7 +4,7 @@ Author:  PH01L
 Email:   phoil@osrsbox.com
 Website: https://www.osrsbox.com
 
-Clean the docker environment
+Update the API after a osrsbox package update
 
 Copyright (c) 2020, PH01L
 
@@ -21,7 +21,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 '
-docker-compose down
-docker volume prune -f
-docker image rm python:3.7-alpine
-docker image rm alpine:latest
+# Dump docker nginx logs
+docker logs osrsbox-api-nginx >> /tmp/nginx.log
+
+# Keep local changes
+git stash
+git pull
+
+# Clean the docker environment
+./auto_clean.sh
+
+# Add existing changes (username/password)
+git stash pop
+
+# Build and run docker environment as a background process
+docker-compose up -d --build
+
+# Load accounts, insert data, and create mongo indiices
+docker exec -it osrsbox-api-eve python3 /var/www/scripts/mongo_create_accounts.py
+docker exec -it osrsbox-api-eve python3 /var/www/scripts/api_insert_data.py
+docker exec -it osrsbox-api-eve python3 /var/www/scripts/mongo_create_indicies.py
