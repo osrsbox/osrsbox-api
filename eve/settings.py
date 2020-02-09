@@ -140,12 +140,48 @@ prayers = {
     # Provide additional prayer.id lookup
     "additional_lookup": {
         # Allow any 5 digit number
-        "url": 'regex("[0-9]{1}")',
+        "url": 'regex("[0-9]{1,2}")',
         "field": "id"
     },
 
     # Specify schema
     "schema": prayer_schema_data,
+}
+
+# Load osrsbox-db schema-icons-items.json file, and get the properties key
+schema_file_path = "schemas/schema-icons-items.json"
+with open(schema_file_path) as f:
+    icons_items_schema_data = json.load(f)
+
+# Define icons-items resource
+icons-items = {
+    # Provide additional icons-items.id lookup
+    "additional_lookup": {
+        # Allow any 5 digit number
+        "url": 'regex("[0-9]{1,5}")',
+        "field": "id"
+    },
+
+    # Specify schema
+    "schema": icons_items_schema_data,
+}
+
+# Load osrsbox-db schema-icons-prayers.json file, and get the properties key
+schema_file_path = "schemas/schema-icons-prayers.json"
+with open(schema_file_path) as f:
+    icons_prayers_schema_data = json.load(f)
+
+# Define icons-prayers resource
+icons-prayers = {
+    # Provide additional icons-items.id lookup
+    "additional_lookup": {
+        # Allow any 5 digit number
+        "url": 'regex("[0-9]{1,2}")',
+        "field": "id"
+    },
+
+    # Specify schema
+    "schema": icons_prayers_schema_data,
 }
 
 DOMAIN = {
@@ -154,4 +190,6 @@ DOMAIN = {
     "equipment": equipment,
     "monsters": monsters,
     "prayers": prayers,
+    "icons-items", icons-items,
+    "icons-prayers", icons-prayers,
 }

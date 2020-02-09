@@ -85,17 +85,23 @@ def insert_api_data(db_type: str):
     print(f">>> Inserting {db_type} data...")
 
     # Insert database contents using osrsbox-api
-    if db_type == "items":
+    if db_type == "items" or db_type == "icons-items":
         all_db_entries = items_api.load()
     elif db_type == "monsters":
         all_db_entries = monsters_api.load()
-    elif db_type == "prayers":
+    elif db_type == "prayers" or db_type == "icons-prayers":
         all_db_entries = prayers_api.load()
 
     all_entries = list()
     bulk_entries = list()
 
     for entry in all_db_entries:
+        # Check if we are processing icons, and strip to id, name
+        if "icons" in db_type:
+            new_entry = dict()
+            new_entry["id"] = entry.id
+            new_entry["icon"] = entry.icon
+            entry = new_entry.copy()
         # Append to a list of all entries
         all_entries.append(entry)
 
@@ -112,9 +118,10 @@ def insert_api_data(db_type: str):
         to_insert = list()
         for entry in block:
             # Make a dictionary from the *Properties object
-            entry_dict = entry.construct_json()
+            if not isinstance(entry, dict):
+                entry = entry.construct_json()
             # Dump dictionary to JSON for API parameter
-            entry_json = json.dumps(entry_dict)
+            entry_json = json.dumps(entry)
             # Append to the to_insert list
             to_insert.append(entry_json)
 
@@ -137,12 +144,6 @@ def insert_api_data(db_type: str):
 
 if __name__ == "__main__":
     # Loop three database types
-    dbs = ["items", "monsters", "prayers"]
+    dbs = ["items", "monsters", "prayers", "icons-items", "icons-prayers"]
     for db_type in dbs:
-        # if db_type == "items":
-        #     continue
-        # if db_type == "monsters":
-        #     continue
-        # if db_type == "prayers":
-        #     continue
         insert_api_data(db_type)
