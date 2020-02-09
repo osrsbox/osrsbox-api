@@ -85,11 +85,11 @@ def insert_api_data(db_type: str):
     print(f">>> Inserting {db_type} data...")
 
     # Insert database contents using osrsbox-api
-    if db_type == "items" or db_type == "icons-items":
+    if db_type == "items" or db_type == "icons_items":
         all_db_entries = items_api.load()
     elif db_type == "monsters":
         all_db_entries = monsters_api.load()
-    elif db_type == "prayers" or db_type == "icons-prayers":
+    elif db_type == "prayers" or db_type == "icons_prayers":
         all_db_entries = prayers_api.load()
 
     all_entries = list()
@@ -105,7 +105,7 @@ def insert_api_data(db_type: str):
         # Append to a list of all entries
         all_entries.append(entry)
 
-    for db_entries in itertools.zip_longest(*[iter(all_db_entries)] * 50):
+    for db_entries in itertools.zip_longest(*[iter(all_entries)] * 50):
         # Remove None entries from the list
         db_entries = filter(None, db_entries)
         # Cast from filter object to list
@@ -144,6 +144,6 @@ def insert_api_data(db_type: str):
 
 if __name__ == "__main__":
     # Loop three database types
-    dbs = ["items", "monsters", "prayers", "icons-items", "icons-prayers"]
+    dbs = ["items", "monsters", "prayers", "icons_items", "icons_prayers"]
     for db_type in dbs:
         insert_api_data(db_type)

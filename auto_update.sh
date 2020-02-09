@@ -27,6 +27,7 @@ docker logs osrsbox-api-nginx >> /tmp/nginx.log
 # Keep local changes
 git stash
 git pull
+git submodule update --remote --merge
 
 # Clean the docker environment
 ./auto_clean.sh

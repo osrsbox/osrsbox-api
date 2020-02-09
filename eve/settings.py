@@ -153,8 +153,8 @@ schema_file_path = "schemas/schema-icons-items.json"
 with open(schema_file_path) as f:
     icons_items_schema_data = json.load(f)
 
-# Define icons-items resource
-icons-items = {
+# Define icons_items resource
+icons_items = {
     # Provide additional icons-items.id lookup
     "additional_lookup": {
         # Allow any 5 digit number
@@ -171,8 +171,8 @@ schema_file_path = "schemas/schema-icons-prayers.json"
 with open(schema_file_path) as f:
     icons_prayers_schema_data = json.load(f)
 
-# Define icons-prayers resource
-icons-prayers = {
+# Define icons_prayers resource
+icons_prayers = {
     # Provide additional icons-items.id lookup
     "additional_lookup": {
         # Allow any 5 digit number
@@ -190,6 +190,6 @@ DOMAIN = {
     "equipment": equipment,
     "monsters": monsters,
     "prayers": prayers,
-    "icons-items", icons-items,
-    "icons-prayers", icons-prayers,
+    "icons_items": icons_items,
+    "icons_prayers": icons_prayers,
 }
