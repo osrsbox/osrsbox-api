@@ -92,7 +92,7 @@ else:
 SWAGGER_CONFIG = {
     "title": "osrsbox-api",
     "version": "1.0",
-    "description": "An open, free, complete and up-to-date RESTful API for Old School RuneScape (OSRS) items, monsters and grand exchange data",
+    "description": "An open, free, complete and up-to-date RESTful API for Old School RuneScape (OSRS) items, monsters and prayers",
     "termsOfService": "Terms of Service",
     "contact": {
         "name": "PH01L",

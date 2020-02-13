@@ -43,7 +43,9 @@ def main():
     collection_names = [
         "items",
         "monsters",
-        "prayers"
+        "prayers",
+        "icons_items",
+        "icons_prayers"
     ]
 
     # Index each collection
