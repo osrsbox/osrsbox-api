@@ -22,27 +22,22 @@
 FROM python:3.7-alpine
 LABEL MAINTAINER="PH01L <phoil@osrsbox.com>"
 
-# Set user environment variables
-ENV GROUP_ID=1000
-ENV USER_ID=1000
-
 # Set PYTHONPATH environment variable
-ENV PYTHONPATH "${PYTHONPATH}:/var/www/"
+ENV PYTHONPATH "${PYTHONPATH}:/var/www/eve/"
 
 # Set working directory to www and app data
-WORKDIR /var/www/
-ADD . /var/www/
+WORKDIR /var/www/eve/
 
 # Install API requirements and gunicorn
-ADD ./requirements.txt /var/www/requirements.txt
+ADD ./requirements.txt /var/www/eve/requirements.txt
 RUN pip install -r requirements.txt
 RUN pip install gunicorn
 
 # Add the www user
-RUN addgroup -g $GROUP_ID www
-RUN adduser -D -u $USER_ID -G www www -s /bin/sh
+RUN addgroup -g 1000 www
+RUN adduser -D -u 1000 -G www www -s /bin/sh
 
-# Run ad the www user
+# Run as the www user
 USER www
 
 # Expose port 5000 and run the app

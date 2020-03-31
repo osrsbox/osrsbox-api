@@ -25,7 +25,7 @@ import os
 import json
 
 # Set to True to enable debugging
-DEBUG = True
+DEBUG = False
 
 # Set global MongoDB configuration
 MONGO_HOST = os.getenv("MONGO_URI")
@@ -35,11 +35,8 @@ MONGO_PASSWORD = os.getenv("PROJECT_PASSWORD")
 MONGO_AUTH_SOURCE = "osrsbox-db"
 MONGO_DBNAME = "osrsbox-db"
 
-# Set api/ as API endpoint
+# Set root (/) as API endpoint
 URL_PREFIX = ""
-
-# Set id to the primary field
-ID_FIELD = "id"
 
 # Set renderer to JSON for API output
 RENDERERS = ["eve.render.JSONRenderer", ]
@@ -51,60 +48,39 @@ RESOURCE_METHODS = ["GET", "POST"]
 ITEM_METHODS = ["GET", "PUT"]
 
 # Lock down all endpoints, apart from GET requests
-PUBLIC_METHODS = ['GET']
-PUBLIC_ITEM_METHODS = ['GET']
+PUBLIC_METHODS = ["GET"]
+PUBLIC_ITEM_METHODS = ["GET"]
 
 # Enable standard client cache directive for all resources
 CACHE_CONTROL = "max-age=20"
 CACHE_EXPIRES = 20
 
-# Load osrsbox-db schema-items.json file, and get the properties key
+# ITEMS
 schema_file_path = "schemas/schema-items.json"
 with open(schema_file_path) as f:
     item_schema_data = json.load(f)
-
 # Define item resource
 items = {
-    # Provide additional item.id lookup
-    "additional_lookup": {
-        # Allow any 5 digit number
-        "url": 'regex("[0-9]{1,5}")',
-        "field": "id"
-    },
-
-    # Specify schema
+    "item_lookup_field": "id",
+    "item_url": 'regex("[0-9]{1,5}")',
     "schema": item_schema_data,
 }
-
+# Define weapon resource
 weapons = {
-    # Provide additional item.id lookup
-    "additional_lookup": {
-        # Allow any 5 digit number
-        "url": 'regex("[0-9]{1,5}")',
-        "field": "id"
-    },
-
-    # Specify schema
+    "item_lookup_field": "id",
+    "item_url": 'regex("[0-9]{1,5}")',
     "schema": item_schema_data,
-
     # Specify items database collection as datasource
     "datasource": {
         "source": "items",
         "filter": {"equipable_weapon": True}
     },
 }
-
+# Define equipment resource
 equipment = {
-    # Provide additional item.id lookup
-    "additional_lookup": {
-        # Allow any 5 digit number
-        "url": 'regex("[0-9]{1,5}")',
-        "field": "id"
-    },
-
-    # Specify schema
+    "item_lookup_field": "id",
+    "item_url": 'regex("[0-9]{1,5}")',
     "schema": item_schema_data,
-
     # Specify items database collection as datasource
     "datasource": {
         "source": "items",
@@ -112,78 +88,93 @@ equipment = {
     },
 }
 
-# Load osrsbox-db schema-monsters.json file, and get the properties key
+# MONSTERS
 schema_file_path = "schemas/schema-monsters.json"
 with open(schema_file_path) as f:
     monster_schema_data = json.load(f)
-
 # Define monsters resource
 monsters = {
-    # Provide additional monster.id lookup
-    "additional_lookup": {
-        # Allow any 5 digit number
-        "url": 'regex("[0-9]{1,5}")',
-        "field": "id"
-    },
-
-    # Specify schema
+    "item_lookup_field": "id",
+    "item_url": 'regex("[0-9]{1,4}")',
     "schema": monster_schema_data,
 }
 
-# Load osrsbox-db schema-prayers.json file, and get the properties key
+# PRAYERS
 schema_file_path = "schemas/schema-prayers.json"
 with open(schema_file_path) as f:
     prayer_schema_data = json.load(f)
-
 # Define prayers resource
 prayers = {
-    # Provide additional prayer.id lookup
-    "additional_lookup": {
-        # Allow any 5 digit number
-        "url": 'regex("[0-9]{1,2}")',
-        "field": "id"
-    },
-
-    # Specify schema
+    "item_lookup_field": "id",
+    "item_url": 'regex("[0-9]{1,2}")',
     "schema": prayer_schema_data,
 }
 
-# Load osrsbox-db schema-icons-items.json file, and get the properties key
+# ICONS ITEMS
 schema_file_path = "schemas/schema-icons-items.json"
 with open(schema_file_path) as f:
     icons_items_schema_data = json.load(f)
-
 # Define icons_items resource
 icons_items = {
-    # Provide additional icons-items.id lookup
-    "additional_lookup": {
-        # Allow any 5 digit number
-        "url": 'regex("[0-9]{1,5}")',
-        "field": "id"
-    },
-
-    # Specify schema
+    "item_lookup_field": "id",
+    "item_url": 'regex("[0-9]{1,5}")',
     "schema": icons_items_schema_data,
 }
 
-# Load osrsbox-db schema-icons-prayers.json file, and get the properties key
+# ICONS PRAYERS
 schema_file_path = "schemas/schema-icons-prayers.json"
 with open(schema_file_path) as f:
     icons_prayers_schema_data = json.load(f)
-
 # Define icons_prayers resource
 icons_prayers = {
-    # Provide additional icons-items.id lookup
-    "additional_lookup": {
-        # Allow any 5 digit number
-        "url": 'regex("[0-9]{1,2}")',
-        "field": "id"
-    },
-
-    # Specify schema
+    "item_lookup_field": "id",
+    "item_url": 'regex("[0-9]{1,2}")',
     "schema": icons_prayers_schema_data,
 }
 
+# GE OFFICIAL
+schema_file_path = "schemas-ge/schema-official.json"
+with open(schema_file_path) as f:
+    ge_official_schema_data = json.load(f)
+# Define item resource
+ge_official = {
+    "item_lookup_field": "id",
+    "item_url": 'regex("[0-9]{1,5}")',
+    "schema": ge_official_schema_data,
+    "disable_documentation": True,
+    "public_methods": [],
+    "public_item_methods": [],
+}
+
+# GE OSBUDDY
+schema_file_path = "schemas-ge/schema-osbuddy.json"
+with open(schema_file_path) as f:
+    ge_osbuddy_schema_data = json.load(f)
+# Define item resource
+ge_osbuddy = {
+    "item_lookup_field": "id",
+    "item_url": 'regex("[0-9]{1,5}")',
+    "schema": ge_osbuddy_schema_data,
+    "disable_documentation": True,
+    "public_methods": [],
+    "public_item_methods": [],
+}
+
+# GE LR
+schema_file_path = "schemas-ge/schema-lr.json"
+with open(schema_file_path) as f:
+    ge_lr_schema_data = json.load(f)
+# Define item resource
+ge_lr = {
+    "item_lookup_field": "id",
+    "item_url": 'regex("[0-9]{1,5}")',
+    "schema": ge_lr_schema_data,
+    "disable_documentation": True,
+    "public_methods": [],
+    "public_item_methods": [],
+}
+
+# Set endpoints
 DOMAIN = {
     "items": items,
     "weapons": weapons,
@@ -192,4 +183,7 @@ DOMAIN = {
     "prayers": prayers,
     "icons_items": icons_items,
     "icons_prayers": icons_prayers,
+    "ge_official": ge_official,
+    "ge_osbuddy": ge_osbuddy,
+    "ge_lr": ge_lr,
 }

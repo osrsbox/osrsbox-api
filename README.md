@@ -78,7 +78,7 @@ This query will return the first 25 items, out of approximately 23,000 available
  },
 ```
 
-You can see that the next page is accessible using the `?page=2` parameter, and there are pages available up to `?page=897`. You could make a loop to query all the pages from page 2 to page 897. A full URL example to fetch the second page would be:
+You can see that the next page is accessible using the `?page=2` parameter and there are pages available up to `?page=897`. You could make a loop to query all the pages from page 2 to page 897. A full URL example to fetch the second page would be:
 
 - [https://api.osrsbox.com/items?page=2](https://api.osrsbox.com/items?page=2)
 
@@ -125,7 +125,32 @@ Start by cloning this repository:
 git clone --recursive https://github.com:osrsbox/osrsbox-api.git
 ```
 
-### Install and Configure Docker
+### Configure Development Environment
+
+This repository, and the Docker environment configuration, is specifically implemented to build on the `api.osrsbox.com` server. This means that certain configuration options have been made that are for the live, or production, environment. The following files and changes are required to run the API locally in development mode:
+
+- `docker-compose.yml`: Change the `APP_ENV` property in the `eve` block to `dev` instead of `prod`
+- `nginx/Dockerfile`: On lines 48 and 50, there are `COPY` commands for two different NGINX configurations files - one for production and one for development. If in development mode, make sure you are using the `app.dev.conf` configuration file. More information is available in the specified file.
+
+### Configue Accounts
+
+This repository is configured with some username and password placeholders. These should not be used in production, or in development (just to be safe). Therefore, these need to be changed before building the Docker environment. The following files have hard-coded usernames, passwords or salts that _should_ to be changed:
+
+- `mongo/create-database.js`: Controls the creation of the `osrsbox-db` database used throughout the Docker environment and the standard MongoDB user to access the database. The following needs to be changed:
+    - `createUser`: Set a username.
+    - `pwd`: Set a password.
+- `docker-compose.yml`: Controls the Docker environment. Account credentials are needed to secure the MongoDB install and to allow the Eve API to connect to MongoDB. The following needs to be changed:
+    - `MONGO_INITDB_ROOT_USERNAME`: The root username of the MongoDB install.
+    - `MONGO_INITDB_ROOT_PASSWORD`: The root password of the MongoDB install.
+    - `PROJECT_USERNAME`: Set to the same `createUser` value you used in the `create-database.js` file.
+    - `PROJECT_PASSWORD`: Set to the same `pwd` value you used in the `create-database.js` file.
+- `scripts/connection_properties`: There are various scripts to help with automatic database content population, indexing of database contents, and creation of accounts to access non-public API methods (PUT, POST). The following needs to be changed:
+    - `self.username`: Set to the same `createUser` value you used in the `create-database.js` file. 
+    - `self.password`: Set to the same `pwd` value you used in the `create-database.js` file.
+
+Note that you can leave all these values as the defaults, but it is very poor security.
+
+### Install Docker
 
 The following instructions are for Ubuntu 18.04. Install the required packages for Docker:
 
@@ -171,7 +196,9 @@ Set executable permissions for the `docker-compose` tool:
 sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-Build and activate the Docker container:
+### Run the Docker Environment
+
+Make sure you are at the root of the `osrsbox-api` repository. Build the Docker container:
 
 ```
 docker-compose up --build
@@ -179,18 +206,28 @@ docker-compose up --build
 
 ### Load Data into the API
 
-From the host system, you can run various scripts that are located in the `eve` folder and `osrsbox-api-eve` container. There are three scripts in the `eve/scripts` folder:
-
-1. To set up user accounts (to allow POST/PUT requests)
-1. To insert data from the `osrsbox` Python package into the API
-1. To create an index (of `id` property) in MongoDB
-
-The scripts can be called with `docker exec` as displayed below:
+From the host system, you can run various scripts that are located in the `scripts` folder in this repository. There is one script that loads all the `osrsbox` PyPi package contents into the MongoDB, and make the data accessible via the API. To insert the data, use the following steps:
 
 ```
-docker exec -it osrsbox-api-eve python3 /var/www/scripts/mongo_create_accounts.py
-docker exec -it osrsbox-api-eve python3 /var/www/scripts/api_insert_data.py
-docker exec -it osrsbox-api-eve python3 /var/www/scripts/mongo_create_indicies.py
+# Create a virtual environment
+python3 -m venv venv
+
+# Activate the virtual environment
+source venv/bin/activate
+
+# Install required packages
+pip install -r requirements.txt
+
+# Insert the data
+python mongo_insert_osrsbox.py
+```
+
+### Check API is Live
+
+Use Firefox (or another browser) to browse to an endpoint to check the data was inserted:
+
+```
+127.0.0.1/items
 ```
 
 Done.

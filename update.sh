@@ -4,7 +4,7 @@ Author:  PH01L
 Email:   phoil@osrsbox.com
 Website: https://www.osrsbox.com
 
-Launch a built docker environemnt
+Update the API after a osrsbox package update
 
 Copyright (c) 2020, PH01L
 
@@ -21,4 +21,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 '
-docker-compose up
+# Dump docker nginx logs
+docker logs osrsbox-api-nginx >> /tmp/nginx.log
+
+# Keep local changes
+git stash
+git pull
+git submodule update --remote --merge
+
+# Clean the docker environment
+./clean.sh
+
+# Add existing changes (username/password)
+git stash pop
+
+# Build and run docker environment, as a background process
+docker-compose up -d --build

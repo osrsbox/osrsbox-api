@@ -46,20 +46,19 @@ class MyValidator(Validator):
 
 class SCryptAuth(BasicAuth):
     def check_auth(self, username, password, allowed_roles, resource, method):
-        accounts = app.data.driver.db['accounts']
+        # Specify accounts collection
+        accounts = app.data.driver.db["accounts"]
 
-        # Determine if account exists
-        account = accounts.find_one({'username': username})
+        # Query accounts collection to see if account exists
+        account = accounts.find_one({"username": username})
         if not account:
             return False
 
-        # Fetch pass/salt from environment variables
-        project_password = os.getenv("PROJECT_PASSWORD")
-        project_salt = os.getenv("PROJECT_SALT")
+        # Get salt from query
+        salt = account["salt"]
 
-        # Encode pass/salt to bytes
-        password = project_password.encode('utf-8')
-        salt = project_salt.encode('utf-8')
+        # Convert user supplied password to bytes
+        password = password.encode()
 
         # Hash pass/salt using scrypt
         password_hashed = hashlib.scrypt(password,
@@ -71,7 +70,7 @@ class SCryptAuth(BasicAuth):
         password_base64 = password_base64.decode()
 
         # Check hashes match
-        return password_base64 == account['password']
+        return password_base64 == account["password"]
 
 
 # Start by configuring environment (production/development)
@@ -88,15 +87,14 @@ else:
     port = 5000
     API_URL = f"http://{host}/api-docs"
 
-# Set Swagger UI configuration
+# Set Swagger configuration
 SWAGGER_CONFIG = {
     "title": "osrsbox-api",
     "version": "1.0",
-    "description": "An open, free, complete and up-to-date RESTful API for Old School RuneScape (OSRS) items, monsters and prayers",
-    "termsOfService": "Terms of Service",
+    "description": "An open, free, complete and up-to-date RESTful API for Old School RuneScape (OSRS) items, monsters and prayers.",
     "contact": {
-        "name": "PH01L",
-        "url": "https://www.osrsbox.com"
+        "name": "osrsbox-api",
+        "url": "https://api.osrsbox.com"
     },
     "license": {
         "name": "GNU General Public License v3.0",
@@ -105,6 +103,7 @@ SWAGGER_CONFIG = {
     "schemes": ["https"],
 }
 
+# If dev environment, use HTTP
 if environment != "prod":
     SWAGGER_CONFIG["schemes"] = ["http"]
 

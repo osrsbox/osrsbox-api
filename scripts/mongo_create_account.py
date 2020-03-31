@@ -4,7 +4,7 @@ Email:   phoil@osrsbox.com
 Website: https://www.osrsbox.com
 
 Description:
-Connect to MongoDB container, create accounts database and populate.
+Connect to MongoDB, create account for API.
 
 Copyright (c) 2020, PH01L
 
@@ -21,46 +21,51 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 """
-import os
 import base64
 import hashlib
+import getpass
+import secrets
 
-from pymongo import MongoClient
+import pymongo
 
-# Set MongoDB connection configuration
-MONGO_PORT = int(os.getenv("MONGO_PORT"))
-MONGO_DBNAME = "osrsbox-db"
-PROJECT_USERNAME = os.getenv("PROJECT_USERNAME")
-PROJECT_PASSWORD = os.getenv("PROJECT_PASSWORD")
-PROJECT_SALT = os.getenv("PROJECT_SALT")
+from connection_properties import ConnectionProperties
+cp = ConnectionProperties()
+
+# Initialize MongoDB connection
+client = pymongo.MongoClient(f"mongodb://{cp.username}:{cp.password}@localhost:{cp.port}/{cp.db_name}")
+db = client[cp.db_name]
 
 
 def main():
-    # Start by generating scrypt hash
-    password = PROJECT_PASSWORD.encode("utf-8")
-    salt = PROJECT_SALT.encode("utf-8")
+    # Get desired username and password from user
+    print(">>> Enter new account details...")
+    username = input("  > Enter username: ")
+    password = getpass.getpass("  > Enter password: ")
+    password = password.encode("utf-8")
+
+    # Generate salt, and convert to base64
+    salt = secrets.token_bytes(64)
+    salt = base64.b64encode(salt)
+    salt = salt.decode()
+    salt = salt.encode("utf-8")
+
+    # Hash new credentials using scrypt
     password_hashed = hashlib.scrypt(password, salt=salt, n=2**14, r=8, p=1)
     password_base64 = base64.b64encode(password_hashed)
     password_base64 = password_base64.decode()
 
-    # Initialize MongoDB connection
-    print(">>> Connecting to MongoDB....")
-    client = MongoClient(f"mongodb://{PROJECT_USERNAME}:{PROJECT_PASSWORD}@mongo:{MONGO_PORT}/{MONGO_DBNAME}")
-
-    # Load database
-    db = client[MONGO_DBNAME]
-
     # Load collections
-    coll = db["accounts"]
+    collection = db["accounts"]
 
     # Initialize user properties
-    admin_user = {
-        "username": PROJECT_USERNAME,
-        "password": password_base64
+    new_user = {
+        "username": username,
+        "password": password_base64,
+        "salt": salt
     }
 
     print("  > Creating account...")
-    coll.insert_one(admin_user)
+    collection.insert_one(new_user)
 
 
 if __name__ == "__main__":

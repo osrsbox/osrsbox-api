@@ -1,10 +1,10 @@
-#!/bin/bash
-: '
+"""
 Author:  PH01L
 Email:   phoil@osrsbox.com
 Website: https://www.osrsbox.com
 
-Clean the docker environment
+Description:
+Database class for MongoDB data properties.
 
 Copyright (c) 2020, PH01L
 
@@ -20,5 +20,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
-'
-docker-compose up --build
+"""
+
+
+class ConnectionProperties():
+    def __init__(self):
+        self.username = "someusername"
+        self.password = "somepassword"
+        self.port = 27017
+        self.db_name = "osrsbox-db"

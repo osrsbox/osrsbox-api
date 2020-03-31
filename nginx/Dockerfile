@@ -39,8 +39,14 @@ RUN mkdir -p /run/nginx
 # Remove the default configuration
 RUN rm -rf /etc/nginx/conf.d/default.conf
 
+# Replace the deault index.html page
+RUN rm /var/lib/nginx/html/index.html
+COPY index.html /var/lib/nginx/html/index.html
+COPY css/app.css /var/lib/nginx/html/css/app.css
+
 # Copy the project configuration file
 COPY conf.d/app.conf /etc/nginx/conf.d/app.conf
+# If in development mode, comment line above, uncomment line below
 # COPY conf.d/app.dev.conf /etc/nginx/conf.d/app.dev.conf
 
 # Expose ports 80/443 to outside

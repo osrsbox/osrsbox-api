@@ -25,3 +25,4 @@ docker-compose down
 docker volume prune -f
 docker image rm python:3.7-alpine
 docker image rm alpine:latest
+docker image rm mongo:latest

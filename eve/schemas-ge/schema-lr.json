@@ -1,0 +1,42 @@
+{
+  "id": {
+    "type": "integer",
+    "required": true,
+    "nullable": false
+  },
+  "confidence": {
+    "type": "float",
+    "required": true,
+    "nullable": false
+  },
+  "data_points": {
+    "type": "integer",
+    "required": true,
+    "nullable": false
+  },
+  "nan_count": {
+    "type": "integer",
+    "required": true,
+    "nullable": false
+  },
+  "prediction": {
+    "type": "list",
+    "required": true,
+    "nullable": false,
+    "schema": {
+      "type": "dict",
+      "schema": {
+        "date": {
+          "type": "string",
+          "required": true,
+          "nullable": false
+        },
+        "price": {
+          "type": "float",
+          "required": true,
+          "nullable": false
+        }
+      }
+    }
+  }
+}

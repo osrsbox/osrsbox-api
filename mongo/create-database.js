@@ -10,3 +10,9 @@ db.getSiblingDB("osrsbox-db").runCommand(
         ]
     }
 )
+
+db.temp.insertOne(
+    { 
+        random: "JIfxp2mVSz61ZF7qzgmF4vBDd2eHjKSiZV6WzUXr24E=", 
+    }
+);

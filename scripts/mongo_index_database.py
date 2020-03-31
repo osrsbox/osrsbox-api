@@ -4,7 +4,7 @@ Email:   phoil@osrsbox.com
 Website: https://www.osrsbox.com
 
 Description:
-Connect to MongoDB container, index the osrsbox-db database collections.
+Connect to MongoDB, index the osrsbox-db database collections.
 
 Copyright (c) 2020, PH01L
 
@@ -21,25 +21,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 """
-import os
+import pymongo
 
-from pymongo import MongoClient
+from connection_properties import ConnectionProperties
+cp = ConnectionProperties()
 
-# Set MongoDB connection configuration
-MONGO_PORT = int(os.getenv("MONGO_PORT"))
-MONGO_DBNAME = "osrsbox-db"
-PROJECT_USERNAME = os.getenv("PROJECT_USERNAME")
-PROJECT_PASSWORD = os.getenv("PROJECT_PASSWORD")
+# Initialize MongoDB connection
+client = pymongo.MongoClient(f"mongodb://{cp.username}:{cp.password}@localhost:{cp.port}/{cp.db_name}")
+db = client[cp.db_name]
 
 
 def main():
-    # Initialize MongoDB connection
-    print(">>> Connecting to MongoDB....")
-    client = MongoClient(f"mongodb://{PROJECT_USERNAME}:{PROJECT_PASSWORD}@mongo:{MONGO_PORT}/{MONGO_DBNAME}")
-
-    # Load database
-    db = client[MONGO_DBNAME]
-
+    # Set names of collections to index
     collection_names = [
         "items",
         "monsters",
@@ -48,11 +41,11 @@ def main():
         "icons_prayers"
     ]
 
-    # Index each collection
+    # Index each collection by ID property
     for collection_name in collection_names:
         print("  > Indexing:", collection_name)
-        coll = db[collection_name]
-        coll.create_index("id")
+        collection = db[collection_name]
+        collection.create_index("id")
 
 
 if __name__ == "__main__":
