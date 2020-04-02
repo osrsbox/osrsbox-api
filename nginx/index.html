@@ -31,7 +31,7 @@
             <div class="cell callout home-callout"><hr></div>
             <div class="cell callout home-callout">
               <h3 class="text-center">Features</h3>
-              <p class="text-center">This API has grown since development started around 2018. This feature-packed API is the newest addition to the services provided. Get reliable, updated, and accurate data for OSRS projects with the following headline features.</p>
+              <p class="text-center">This API is a recent release, using data from the osrsbox-db project - which has been in active development since 2017. This feature-packed API is the newest addition to the services provided. Get reliable, updated, and accurate data for OSRS projects with the following headline features.</p>
               <div class="grid-container">
                 <div class="grid-x grid-margin-x small-up-1 medium-up-2">
                   <div class="cell">
@@ -39,7 +39,7 @@
                           <i class="fas fa-file-code fa-5x text-center"></i>
                         <div class="card-section">
                           <h5 class="text-center">JSON File Format</h5>
-                          <p class="home-card-para text-center">Get extensive item, equipment, monster and prayer data in the popular JSON file format.</p>
+                          <p class="home-card-para text-center">Get extensive item, equipment, weapon, monster and prayer data in the popular JSON file format. Also get icons in base64 format.</p>
                         </div>
                       </div>
                     </div>
@@ -57,7 +57,7 @@
                         <i class="fas fa-database fa-5x text-center"></i>
                         <div class="card-section">
                             <h5 class="text-center">Rich API Queries</h5>
-                            <p class="home-card-para text-center">Write detailed, rich queries to filter, sort, project and group strictly validated item, monster or prayer data.</p>
+                            <p class="home-card-para text-center">Write detailed, rich queries to filter, sort, project and group data that is strictly validated for items, monsters and prayers.</p>
                       </div>
                     </div>
                   </div>
@@ -84,7 +84,7 @@
                         <i class="fas fa-kiwi-bird fa-5x text-center"></i>
                       <div class="card-section">
                         <h5 class="text-center">Kiwi with Laser Eyes</h5>
-                        <p class="home-card-para text-center">Sadly, this project has nothing to do with kiwi birds that have lasers for eyes. But it would be cooler if it did!</p>
+                        <p class="home-card-para text-center">Sadly, this project has nothing to do with kiwi birds that have lasers for eyes. But it would be a lot cooler if it did!</p>
                       </div>
                     </div>
                   </div>
@@ -96,13 +96,13 @@
                 <h3 class="text-center">Endpoints</h3>
                 <p class="text-center">APIs are comprised of <i>endpoints</i> that you can query to get specific data that you are interested in. Simply put, you can do things like ask the <code>/items</code> endpoint to give you data (e.g.,name, id, members status, equipment stats) about the <i>Abyssal whip</i>. This API provides the following endpoints...</p>
                 <div class="grid-container">
-                  <div class="grid-x grid-margin-x small-up-2 medium-up-3">
+                  <div class="grid-x grid-margin-x small-up-1 medium-up-2 large-up-3">
                     <div class="cell">
                       <a href="/items">
                         <div class="card home-card">
                           <div class="card-section">
                             <h5 class="text-center"><strong>/items</strong></h5>
-                            <p class="home-card-para text-center">Over 23,000 items, each with more that 35 fields including item properties, equipment stats, and weapon staces.</p>
+                            <p class="home-card-para text-center">Every item in Old School RuneScape. Over 23,000 items, each with more that 35 fields including item properties, equipment stats, and weapon stances.</p>
                           </div>
                         </div>
                       </a>
@@ -112,7 +112,7 @@
                         <div class="card home-card">
                           <div class="card-section">
                             <h5 class="text-center"><strong>/equipment</strong></strong></h5>
-                            <p class="home-card-para text-center">Over 3,700 equipable items, such as armour, and weapons including attack and defence stats and item slot value.</p>
+                            <p class="home-card-para text-center">Over 3,700 equipable items, such as armour, and weapons including attack and defence stats and item slot details.</p>
                           </div>
                         </div>
                       </a>
@@ -122,7 +122,7 @@
                         <div class="card home-card">
                           <div class="card-section">
                             <h5 class="text-center"><strong>/weapons</strong></h5>
-                            <p class="home-card-para text-center">Over 800 weapons available including stats and attack type, stance and attack interval.</p>
+                            <p class="home-card-para text-center">Over 800 weapons available including stats and attack type, attack stance and attack interval.</p>
                           </div>
                         </div>
                       </a>
@@ -173,6 +173,7 @@
             <div class="cell callout home-callout">
               <h3 class="text-center">Quick Start</h3>
               <p class="text-center">For those who have not used an API before, the process can be a little daunting. This section presents some basic examples, and a general quickstart tutorial to the osrsbox-api project. The key to using this API is to construct queries. So the quick start includes a summary of some interesting and useful queries. Just copy are paste some of the API URL examples into your browser to see the results. You could also use the <code>curl</code> command, or write a simple script in Bash, Python or PowerShell.</p>
+              <p class="text-center">To help with constructing queries it is recommended that you review the properties available for <a href="https://github.com/osrsbox/osrsbox-db#the-item-database">items, equipment and weapons</a>, for <a href="https://github.com/osrsbox/osrsbox-db#the-monster-database">monsters</a>, and for <a href="https://github.com/osrsbox/osrsbox-db#the-prayer-database">prayers</a>. The links provide tables of available properties and give an idea of what parameters are available to use in queries for each API endpoint. Additionally, the tables display data types of each property.</p>
               <p><strong>Get the first 25 items</strong>. Get a list of items a page at a time. Each page/request will have 25 items. By default the list of items starts from the lowest item ID number.</p>
               <code class="code-block">https://api.osrsbox.com/items</code>
               <p><strong>Get the second 25 items</strong>. Get the next 25 items available in the API.</p>
@@ -187,11 +188,15 @@
               <code class="code-block">https://api.osrsbox.com/weapons?where=equipment.prayer<0</code>
               <p><strong>Projection example to find an items ID number</strong>. You may have noticed that we have been getting long, JSON formatted data back from the API. What happens if you only want a specific property? The following example finds the Bandos chestplate and returns only the <code>id</code> property.</p>
               <code class="code-block">https://api.osrsbox.com/equipment?where={ "name": "Bandos chestplate" }&projection={ "id": 1 }</code>
+              <p><strong>Element match example to find a monster that drops a specific item</strong>. A useful search is to perform a lookup on the monsters API endpoint and search for monsters that drop a specific item. The following example finds monsters that drop the Smoke battlestaff, which has the item ID of <code>11998</code>The key factor to this search, is the <code>$elemMatch</code> query which searches a list (array), in this case the <code>drops</code> list of a monster.</p>
+              <code class="code-block">https://api.osrsbox.com/monsters?where={ "drops": { "$elemMatch": { "id":11998 } } }</code>
+              <p><strong>Advanced query for finding equipment with specifc stats</strong>. A useful search is to perform a lookup on the items API endpoint and search for equipment with specific stats. The following example finds items that have a <code>ranged_strength</code> property of over 80, which are two-handed.</p>
+              <code class="code-block">https://api.osrsbox.com/weapons?where={ "equipment.slot": "2h", "duplicate": false, "equipment.ranged_strength": { "$gte": 80 } }</code>
             </div>
             <div class="cell callout home-callout"><hr></div>
             <div class="cell callout home-callout">
               <h3 class="text-center">Documentation</h3>
-              <p class="text-center">This API comes with additional documentation from a variety of sources. The project is completely open source, and the Docker build environment is available on GitHub. Additionally, the item, monster and prayer data is openly available on GitHub. To investigate the API endpoints, and data available the Swagger specification, and SwaggerUI are also provided.</p>
+              <p class="text-center">This API comes with additional documentation from a variety of sources. The project is completely open source, and the Docker build environment is available on GitHub. Additionally, the item, monster and prayer data is also openly available on GitHub. To investigate the API endpoints the Swagger specification, and SwaggerUI are especially useful.</p>
             </div>
             <div class="grid-container">
               <div class="grid-x grid-margin-x small-up-1 medium-up-2">
@@ -212,7 +217,7 @@
                     <i class="fas fa-code fa-5x text-center"></i>
                     <div class="card-section">
                     <h5 class="text-center">Swagger Specification (OpenAPI)</h5>
-                      <p class="home-card-para text-center">To create the SwaggerUI a specification is required. The Swagger, now known as OpenAPI, specification is readily avilable for investigation to see how the API is structured.</p>
+                      <p class="home-card-para text-center">To create the SwaggerUI a specification is required. The Swagger specification, now known as OpenAPI, is readily avilable for investigation to see how the API is structured.</p>
                     </div>
                   </div>
                 </a>
@@ -277,7 +282,7 @@
           </p>
         </div>
         <div class="cell large-12">
-          <p class="footer-copyright text-center">Developed with <i class="fas fa-coffee"></i> and <i class="fas fa-coffee"></i> using <a href="https://get.foundation/">Foundation</a> and <a href="https://fontawesome.com/">FontAwesome</a>.
+          <p class="footer-copyright text-center">Developed with <i class="fas fa-coffee"></i> and <i class="fas fa-beer"></i> using <a href="https://get.foundation/">Foundation</a> and <a href="https://fontawesome.com/">FontAwesome</a>.
           </p>
         </div>
       </div>

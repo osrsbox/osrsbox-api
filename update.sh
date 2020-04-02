@@ -21,19 +21,30 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 '
+# Get current date
+date=$(date +'%m-%d-%Y')
+
 # Dump docker nginx logs
-docker logs osrsbox-api-nginx >> /tmp/nginx.log
+docker logs osrsbox-api-nginx > ~/nginx-$date.log
+
+# Stop all docker containers
+docker-compose stop
 
 # Keep local changes
 git stash
 git pull
-git submodule update --remote --merge
 
-# Clean the docker environment
-./clean.sh
+# # Update submodules (schemas)
+# git submodule update --remote --merge
 
 # Add existing changes (username/password)
 git stash pop
 
 # Build and run docker environment, as a background process
 docker-compose up -d --build
+
+# Update osrsbox data
+cd scripts
+source venv/bin/activate
+python mongo_insert_osrsbox.py
+deactivate

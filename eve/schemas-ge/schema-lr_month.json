@@ -1,21 +1,6 @@
 {
   "id": {
-    "type": "integer",
-    "required": true,
-    "nullable": false
-  },
-  "confidence": {
-    "type": "float",
-    "required": true,
-    "nullable": false
-  },
-  "data_points": {
-    "type": "integer",
-    "required": true,
-    "nullable": false
-  },
-  "nan_count": {
-    "type": "integer",
+    "type": "string",
     "required": true,
     "nullable": false
   },
@@ -26,13 +11,28 @@
     "schema": {
       "type": "dict",
       "schema": {
-        "date": {
+        "d": {
           "type": "string",
           "required": true,
           "nullable": false
         },
-        "price": {
+        "p": {
           "type": "float",
+          "required": true,
+          "nullable": false
+        },
+        "c": {
+          "type": "float",
+          "required": true,
+          "nullable": false
+        },
+        "dp": {
+          "type": "integer",
+          "required": true,
+          "nullable": false
+        },
+        "nc": {
+          "type": "integer",
           "required": true,
           "nullable": false
         }

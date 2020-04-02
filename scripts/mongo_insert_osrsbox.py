@@ -35,7 +35,7 @@ client = pymongo.MongoClient(f"mongodb://{cp.username}:{cp.password}@localhost:{
 db = client[cp.db_name]
 
 
-def insert_api_data(db_type: str):
+def insert_data(db_type: str):
     print(f">>> Inserting {db_type} data...")
 
     # Insert database contents using osrsbox-api
@@ -58,6 +58,10 @@ def insert_api_data(db_type: str):
             entry = new_entry.copy()
         # Append to a list of all entries
         all_entries.append(entry)
+
+    # Remove all entries in the collection
+    collection = db[db_type]
+    collection.remove()
 
     for db_entries in itertools.zip_longest(*[iter(all_entries)] * 50):
         # Remove None entries from the list
@@ -88,7 +92,7 @@ if __name__ == "__main__":
     # Loop three database types
     dbs = ["items", "monsters", "prayers", "icons_items", "icons_prayers"]
     for db_type in dbs:
-        insert_api_data(db_type)
+        insert_data(db_type)
         collection = db[db_type]
         print(">>> Indexing...")
         collection.create_index("_id")

@@ -1,0 +1,42 @@
+{
+  "id": {
+    "type": "integer",
+    "required": true,
+    "nullable": false
+  },
+  "data": {
+    "type": "list",
+    "required": true,
+    "nullable": false,
+    "schema": {
+      "type": "dict",
+      "schema": {
+        "d": {
+          "type": "string",
+          "required": true,
+          "nullable": false
+        },
+        "ba": {
+          "type": "integer",
+          "required": true,
+          "nullable": false
+        },
+        "bq": {
+          "type": "integer",
+          "required": true,
+          "nullable": false
+        },
+        "sa": {
+          "type": "integer",
+          "required": true,
+          "nullable": false
+        },
+        "sq": {
+          "type": "integer",
+          "required": true,
+          "nullable": false
+        }
+      }
+    }
+  }
+}
