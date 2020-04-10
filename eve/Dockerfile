@@ -42,4 +42,4 @@ USER www
 
 # Expose port 5000 and run the app
 EXPOSE 5000
-CMD [ "gunicorn", "-w", "4", "--bind", "0.0.0.0:5000", "run:app"]
+CMD [ "gunicorn", "--workers", "3", "--worker-connections", "1024", "--log-file", "-", "--bind", "0.0.0.0:5000", "run:app"]

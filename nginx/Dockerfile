@@ -28,6 +28,9 @@ RUN apk --update add nginx
 # Remove cache to reclaim some space
 RUN rm -rf /var/cache/apk/*
 
+# Make directory for cache
+RUN mkdir -p /etc/nginx/cache
+
 # Link log files to stdout/err to forward to Docker logs
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log

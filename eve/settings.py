@@ -52,8 +52,8 @@ PUBLIC_METHODS = ["GET"]
 PUBLIC_ITEM_METHODS = ["GET"]
 
 # Enable standard client cache directive for all resources
-CACHE_CONTROL = "max-age=20"
-CACHE_EXPIRES = 20
+CACHE_CONTROL = "public, max-age=86400"
+CACHE_EXPIRES = 86400
 
 # ITEMS
 schema_file_path = "schemas/schema-items.json"
@@ -132,62 +132,6 @@ icons_prayers = {
     "schema": icons_prayers_schema_data,
 }
 
-# GE OFFICIAL
-schema_file_path = "schemas-ge/schema-ge_official.json"
-with open(schema_file_path) as f:
-    ge_official_schema_data = json.load(f)
-# Define item resource
-ge_official = {
-    "item_lookup_field": "id",
-    "item_url": 'regex("[0-9]{1,5}")',
-    "schema": ge_official_schema_data,
-    "disable_documentation": True,
-    "public_methods": [],
-    "public_item_methods": [],
-}
-
-# GE OSBUDDY
-schema_file_path = "schemas-ge/schema-ge_osbuddy.json"
-with open(schema_file_path) as f:
-    ge_osbuddy_schema_data = json.load(f)
-# Define item resource
-ge_osbuddy = {
-    "item_lookup_field": "id",
-    "item_url": 'regex("[0-9]{1,5}")',
-    "schema": ge_osbuddy_schema_data,
-    "disable_documentation": True,
-    "public_methods": [],
-    "public_item_methods": [],
-}
-
-# GE LR WEEK
-schema_file_path = "schemas-ge/schema-lr_week.json"
-with open(schema_file_path) as f:
-    ge_lr_schema_data = json.load(f)
-# Define item resource
-lr_week = {
-    "item_lookup_field": "id",
-    "item_url": 'regex("[0-9]{1,5}")',
-    "schema": ge_lr_schema_data,
-    "disable_documentation": True,
-    "public_methods": [],
-    "public_item_methods": [],
-}
-
-# GE LR MONTH
-schema_file_path = "schemas-ge/schema-lr_month.json"
-with open(schema_file_path) as f:
-    ge_lr_schema_data = json.load(f)
-# Define item resource
-lr_month = {
-    "item_lookup_field": "id",
-    "item_url": 'regex("[0-9]{1,5}")',
-    "schema": ge_lr_schema_data,
-    "disable_documentation": True,
-    "public_methods": [],
-    "public_item_methods": [],
-}
-
 # Set endpoints
 DOMAIN = {
     "items": items,
@@ -197,8 +141,4 @@ DOMAIN = {
     "prayers": prayers,
     "icons_items": icons_items,
     "icons_prayers": icons_prayers,
-    "ge_official": ge_official,
-    "ge_osbuddy": ge_osbuddy,
-    "lr_week": lr_week,
-    "lr_month": lr_month,
 }
