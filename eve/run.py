@@ -135,8 +135,8 @@ app.config["SWAGGER_INFO"] = SWAGGER_CONFIG
 app.config["SWAGGER_HOST"] = f"{host}"
 
 
-@app.errorhandler(500)
-def resource_not_found(e):
+@app.errorhandler(Exception)
+def handle_exception(e):
     rdict = {
         "_status": "ERR",
         "_error": {
@@ -145,7 +145,7 @@ def resource_not_found(e):
         }
     }
 
-    return jsonify(rdict)
+    return jsonify(rdict), 500
 
 
 if __name__ == "__main__":
