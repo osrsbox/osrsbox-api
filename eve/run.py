@@ -30,6 +30,7 @@ from eve.auth import BasicAuth
 from eve.io.mongo import Validator
 from eve_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
+from flask import jsonify
 
 
 class MyValidator(Validator):
@@ -132,6 +133,19 @@ app.config["SWAGGER_INFO"] = SWAGGER_CONFIG
 
 # Set the Swagger host, to enable running of Swagger UI API calls
 app.config["SWAGGER_HOST"] = f"{host}"
+
+
+@app.errorhandler(500)
+def resource_not_found(e):
+    rdict = {
+        "_status": "ERR",
+        "_error": {
+            "code": 500,
+            "message": str(e)
+        }
+    }
+
+    return jsonify(rdict)
 
 
 if __name__ == "__main__":
