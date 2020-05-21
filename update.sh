@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 date=$(date +'%m-%d-%Y')
 
 # Dump docker nginx logs
-docker logs osrsbox-api-nginx > ~/nginx-$date.log
+docker logs osrsbox-api-nginx >> ~/nginx-$date.log 2>&1
 
 # Stop all docker containers
 docker-compose stop
