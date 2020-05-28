@@ -96,3 +96,5 @@ if __name__ == "__main__":
         collection = db[db_type]
         print(">>> Indexing...")
         collection.create_index("_id")
+        if db_type in ["items", "monsters"]:
+            collection.create_index([("name", pymongo.TEXT)], default_language="english")

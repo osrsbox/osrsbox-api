@@ -46,7 +46,8 @@ def main():
         print("  > Indexing:", collection_name)
         collection = db[collection_name]
         collection.create_index("id")
-
+        if collection_name in ["items", "monsters"]:
+            collection.create_index([("name", pymongo.TEXT)], default_language="english")
 
 if __name__ == "__main__":
     main()
