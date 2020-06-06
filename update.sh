@@ -46,5 +46,6 @@ docker-compose up -d --build
 # Update osrsbox data
 cd scripts
 source venv/bin/activate
+pip install -r requirements.txt
 python mongo_insert_osrsbox.py
 deactivate
