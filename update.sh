@@ -30,6 +30,8 @@ docker logs osrsbox-api-nginx >> ~/nginx-$date.log 2>&1
 # Stop all docker containers
 docker-compose stop
 
+bash clean.sh
+
 # Keep local changes
 git stash
 git pull
