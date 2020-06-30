@@ -81,7 +81,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /etc/letsencrypt/archive/:/etc/nginx/certs/
+      - /etc/letsencrypt/live/:/etc/nginx/certs/
       - nginxdata:/var/log/nginx
     depends_on:
       - eve
