@@ -70,18 +70,13 @@ services:
       context: nginx
       dockerfile: Dockerfile
     container_name: osrsbox-api-nginx
-    image: nginx:latest
+    image: alpine:latest
     restart: unless-stopped
-    environment:
-      APP_ENV: "prod"
-      APP_NAME: "webserver"
-      APP_DEBUG: "false"
-      SERVICE_NAME: "webserver"
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - /etc/letsencrypt/live/:/etc/nginx/certs/
+      - /etc/letsencrypt/:/etc/nginx/certs/
       - nginxdata:/var/log/nginx
     depends_on:
       - eve

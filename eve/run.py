@@ -28,7 +28,7 @@ import hashlib
 from eve import Eve
 from eve.auth import BasicAuth
 from eve.io.mongo import Validator
-from eve_swagger import swagger
+from eve_swagger import get_swagger_blueprint
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask import jsonify
 
@@ -122,6 +122,7 @@ app = Eve(validator=MyValidator,
           auth=SCryptAuth)
 
 # Using eve-swagger, generate /api-docs JSON for Swagger UI
+swagger = get_swagger_blueprint()
 app.register_blueprint(swagger)
 
 # Using flask_swagger_ui, generate Swagger UI web interface
