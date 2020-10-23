@@ -36,7 +36,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 
 # Make needed directories
-RUN mkdir /etc/nginx/sites-enabled/
+RUN mkdir -p /etc/nginx/sites-enabled/
 RUN mkdir -p /run/nginx
 
 # Remove the default configuration

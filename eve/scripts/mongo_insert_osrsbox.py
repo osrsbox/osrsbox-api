@@ -31,7 +31,7 @@ from osrsbox import prayers_api
 from connection_properties import ConnectionProperties
 cp = ConnectionProperties()
 
-client = pymongo.MongoClient(f"mongodb://{cp.username}:{cp.password}@localhost:{cp.port}/{cp.db_name}")
+client = pymongo.MongoClient(f"mongodb://{cp.username}:{cp.password}@osrsbox-api-mongo:{cp.port}/{cp.db_name}")
 db = client[cp.db_name]
 
 

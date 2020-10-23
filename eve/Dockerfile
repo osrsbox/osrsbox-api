@@ -33,9 +33,10 @@ ADD ./requirements.txt /var/www/eve/requirements.txt
 RUN pip install -r requirements.txt
 RUN pip install gunicorn
 
-# Add the www user
-RUN addgroup -g 1000 www
-RUN adduser -D -u 1000 -G www www -s /bin/sh
+# Add the www user, run as root (temporarily)
+USER root
+RUN addgroup -g 1000 www; exit 0
+RUN adduser -D -u 1000 -G www www -s /bin/sh; exit 0
 
 # Run as the www user
 USER www

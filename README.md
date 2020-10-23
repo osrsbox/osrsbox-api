@@ -58,24 +58,24 @@ If you were interested in monsters, just replace the `items` endpoint, with `mon
 This query will return the first 25 items, out of approximately 23,000 available items. From here you can continue the query using pagination. The returned JSON from the first query will have a `_links` key, with a nested `next` key and also a nested `last` key. Below is an example:
 
 ```
- "_links": {
- "parent": {
- "title": "home",
- "href": "/"
- },
- "self": {
- "title": "items",
- "href": "items"
- },
- "next": {
- "title": "next page",
- "href": "items?page=2"
- },
- "last": {
- "title": "last page",
- "href": "items?page=897"
- }
- },
+"_links": {
+    "parent": {
+        "title": "home",
+        "href": "/"
+    },
+    "self": {
+        "title": "items",
+        "href": "items"
+    },
+    "next": {
+        "title": "next page",
+        "href": "items?page=2"
+    },
+    "last": {
+        "title": "last page",
+        "href": "items?page=897"
+    }
+},
 ```
 
 You can see that the next page is accessible using the `?page=2` parameter and there are pages available up to `?page=897`. You could make a loop to query all the pages from page 2 to page 897. A full URL example to fetch the second page would be:
@@ -130,7 +130,7 @@ git clone --recursive https://github.com:osrsbox/osrsbox-api.git
 This repository, and the Docker environment configuration, is specifically implemented to build on the `api.osrsbox.com` server. This means that certain configuration options have been made that are for the live, or production, environment. The following files and changes are required to run the API locally in development mode:
 
 - `docker-compose.yml`: Change the `APP_ENV` property in the `eve` block to `dev` instead of `prod`
-- `nginx/Dockerfile`: On lines 48 and 50, there are `COPY` commands for two different NGINX configurations files - one for production and one for development. If in development mode, make sure you are using the `app.dev.conf` configuration file. More information is available in the specified file.
+- `nginx/Dockerfile`: On lines 51 and 53, there are `COPY` commands for two different NGINX configurations files - one for production and one for development. If in development mode, make sure you are using the `app.dev.conf` configuration file. More information is available in the specified file.
 
 ### Configue Accounts
 
@@ -144,7 +144,7 @@ This repository is configured with some username and password placeholders. Thes
     - `MONGO_INITDB_ROOT_PASSWORD`: The root password of the MongoDB install.
     - `PROJECT_USERNAME`: Set to the same `createUser` value you used in the `create-database.js` file.
     - `PROJECT_PASSWORD`: Set to the same `pwd` value you used in the `create-database.js` file.
-- `scripts/connection_properties`: There are various scripts to help with automatic database content population, indexing of database contents, and creation of accounts to access non-public API methods (PUT, POST). The following needs to be changed:
+- `eve/scripts/connection_properties`: There are various scripts to help with automatic database content population, indexing of database contents, and creation of accounts to access non-public API methods (PUT, POST). The following needs to be changed:
     - `self.username`: Set to the same `createUser` value you used in the `create-database.js` file. 
     - `self.password`: Set to the same `pwd` value you used in the `create-database.js` file.
 
@@ -206,20 +206,15 @@ docker-compose up --build
 
 ### Load Data into the API
 
-From the host system, you can run various scripts that are located in the `scripts` folder in this repository. There is one script that loads all the `osrsbox` PyPi package contents into the MongoDB, and make the data accessible via the API. To insert the data, use the following steps:
+The data used to be loaded via the host system - which has recently changed. Now you should load the data via the `eve` container. The needed scripts are in the `eve/scripts` folder, and can easily be executed by running the script from the Docker container. To insert the data, use the following steps:
 
 ```
-# Create a virtual environment
-python3 -m venv venv
-
-# Activate the virtual environment
-source venv/bin/activate
-
-# Install required packages
-pip install -r requirements.txt
+# Update the python packages in the eve container
+# You can skip if you want, and pur is needed locally to update
+pur -r eve/requirements.txt
 
 # Insert the data
-python mongo_insert_osrsbox.py
+docker exec -t osrsbox-api-eve python3 /scripts/mongo_insert_osrsbox.py
 ```
 
 ### Check API is Live

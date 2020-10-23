@@ -42,12 +42,12 @@ git pull
 # Add existing changes (username/password)
 git stash pop
 
+# Update Python packages in eve/requirements.txt
+# This requires pur on the host system!
+pur -r eve/requirements.txt
+
 # Build and run docker environment, as a background process
 docker-compose up -d --build
 
 # Update osrsbox data
-cd scripts
-source venv/bin/activate
-pip install -r requirements.txt
-python mongo_insert_osrsbox.py
-deactivate
+docker exec -t osrsbox-api-eve python3 /scripts/mongo_insert_osrsbox.py
