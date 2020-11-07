@@ -32,8 +32,8 @@ MONGO_HOST = os.getenv("MONGO_URI")
 MONGO_PORT = int(os.getenv("MONGO_PORT"))
 MONGO_USERNAME = os.getenv("PROJECT_USERNAME")
 MONGO_PASSWORD = os.getenv("PROJECT_PASSWORD")
-MONGO_AUTH_SOURCE = "osrsbox-db"
-MONGO_DBNAME = "osrsbox-db"
+MONGO_AUTH_SOURCE = os.getenv("DATABASE_NAME")
+MONGO_DBNAME = os.getenv("DATABASE_NAME")
 
 # Set root (/) as API endpoint
 URL_PREFIX = ""
@@ -42,10 +42,12 @@ URL_PREFIX = ""
 RENDERERS = ["eve.render.JSONRenderer", ]
 
 # Enable GET, POST, and DELETE for collections
-RESOURCE_METHODS = ["GET", "POST"]
+# RESOURCE_METHODS = ["GET", "POST"]
+RESOURCE_METHODS = ["GET"]
 
 # Enable GET, PUT and DELETE for items in collections
-ITEM_METHODS = ["GET", "PUT"]
+# ITEM_METHODS = ["GET", "PUT"]
+ITEM_METHODS = ["GET"]
 
 # Lock down all endpoints, apart from GET requests
 PUBLIC_METHODS = ["GET"]

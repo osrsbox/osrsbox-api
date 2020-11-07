@@ -115,7 +115,7 @@ Using these properties, you could entend the initial query. For example:
 
 ## Setup Instructions
 
-You can set up your local API using the following instructions. These instructions are for Ubuntu 18.04 and have not been tested on other environments. But they are pretty generic.
+You can set up your own local API using the following instructions. These instructions are for Ubuntu 18.04 and have not been tested on other environments. But they are pretty generic for a Docker with Docker Compose environment.
 
 ### Clone this Repository
 
@@ -127,32 +127,33 @@ git clone --recursive https://github.com:osrsbox/osrsbox-api.git
 
 ### Configure Development Environment
 
-This repository, and the Docker environment configuration, is specifically implemented to build on the `api.osrsbox.com` server. This means that certain configuration options have been made that are for the live, or production, environment. The following files and changes are required to run the API locally in development mode:
+This repository, and the Docker configuration, is specifically implemented to build on the `api.osrsbox.com` server. This means that certain configuration options have been made that are for the live (production) environment. The following file change is required to run the API locally in development mode:
 
-- `docker-compose.yml`: Change the `APP_ENV` property in the `eve` block to `dev` instead of `prod`
-- `nginx/Dockerfile`: On lines 51 and 53, there are `COPY` commands for two different NGINX configurations files - one for production and one for development. If in development mode, make sure you are using the `app.dev.conf` configuration file. More information is available in the specified file.
+- `nginx/Dockerfile`: On lines 51 and 53, there are `COPY` commands for two different NGINX configurations files - one for production and one for development. If in development mode, make sure you are using the `app.dev.conf` configuration file. More information is documented in this file.
 
 ### Configue Accounts
 
-This repository is configured with some username and password placeholders. These should not be used in production, or in development (just to be safe). Therefore, these need to be changed before building the Docker environment. The following files have hard-coded usernames, passwords or salts that _should_ to be changed:
+This project uses a collection of environment variables, stored in the `.env` file. This includes some credentials (usernames, passwords), as well as configuration (ports, database name).
 
-- `mongo/create-database.js`: Controls the creation of the `osrsbox-db` database used throughout the Docker environment and the standard MongoDB user to access the database. The following needs to be changed:
-    - `createUser`: Set a username.
-    - `pwd`: Set a password.
-- `docker-compose.yml`: Controls the Docker environment. Account credentials are needed to secure the MongoDB install and to allow the Eve API to connect to MongoDB. The following needs to be changed:
-    - `MONGO_INITDB_ROOT_USERNAME`: The root username of the MongoDB install.
-    - `MONGO_INITDB_ROOT_PASSWORD`: The root password of the MongoDB install.
-    - `PROJECT_USERNAME`: Set to the same `createUser` value you used in the `create-database.js` file.
-    - `PROJECT_PASSWORD`: Set to the same `pwd` value you used in the `create-database.js` file.
-- `eve/scripts/connection_properties`: There are various scripts to help with automatic database content population, indexing of database contents, and creation of accounts to access non-public API methods (PUT, POST). The following needs to be changed:
-    - `self.username`: Set to the same `createUser` value you used in the `create-database.js` file. 
-    - `self.password`: Set to the same `pwd` value you used in the `create-database.js` file.
+The credentials should be changed before building this project, even in a development environment - just to be safe! Below is the default contents of the `.env` file: 
 
-Note that you can leave all these values as the defaults, but it is very poor security.
+```
+MONGO_INITDB_ROOT_USERNAME=ruser
+MONGO_INITDB_ROOT_PASSWORD=rpasswd
+MONGO_PORT=27017
+DATABASE_NAME=osrsbox-db
+PROJECT_USERNAME=puser
+PROJECT_PASSWORD=ppasswd
+ENVIRONMENT=prod
+```
+
+Make sure to change the username and password values.
 
 ### Install Docker
 
-The following instructions are for Ubuntu 18.04. Install the required packages for Docker:
+The following instructions are for setting up an Ubuntu 18.04 server with Docker. These are mainly documented here for my own reference, and are basically a copy of a Digital Ocean tutorial.
+
+Install the required packages for Docker:
 
 ```
 sudo apt install apt-transport-https ca-certificates curl software-properties-common
@@ -172,7 +173,7 @@ sudo apt update
 apt-cache policy docker-ce
 ```
 
-Install Docker:
+Install the Docker package:
 
 ```
 sudo apt install docker-ce
@@ -184,7 +185,7 @@ Add current user to `docker` group to allow a user to run Docker:
 sudo usermod -aG docker ${USER}
 ```
 
-Install the `docker-compose` tool:
+Install the `docker-compose` tool. The version should be bumped in the future.
 
 ```
 sudo curl -L https://github.com/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
@@ -206,23 +207,20 @@ docker-compose up --build
 
 ### Load Data into the API
 
-The data used to be loaded via the host system - which has recently changed. Now you should load the data via the `eve` container. The needed scripts are in the `eve/scripts` folder, and can easily be executed by running the script from the Docker container. To insert the data, use the following steps:
+The data used to be loaded via the host system - which has just been changed. Now you should load the data via the `eve` container. The needed scripts are in the `eve/scripts` folder, and can easily be executed by running the script within the Docker container. To insert the data, use the following command:
 
 ```
-# Update the python packages in the eve container
-# You can skip if you want, and pur is needed locally to update
-pur -r eve/requirements.txt
-
-# Insert the data
 docker exec -t osrsbox-api-eve python3 /scripts/mongo_insert_osrsbox.py
 ```
+
+I usually keep the `osrsbox` package updated in this repo - so that new and updated data is loaded into the API. You can always manually update the `osrsbox` version by modifying the version in the `eve/requirements.txt` file. You could also use something like `pur` to auto update the package in the same file.
 
 ### Check API is Live
 
 Use Firefox (or another browser) to browse to an endpoint to check the data was inserted:
 
 ```
-127.0.0.1/items
+0.0.0.0/items
 ```
 
 Done.

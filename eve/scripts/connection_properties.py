@@ -21,11 +21,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 """
+import os
 
 
 class ConnectionProperties():
     def __init__(self):
-        self.username = "someusername"
-        self.password = "somepassword"
-        self.port = 27017
-        self.db_name = "osrsbox-db"
+        self.username = os.getenv("PROJECT_USERNAME")
+        self.password = os.getenv("PROJECT_PASSWORD")
+        self.port = os.getenv("MONGO_PORT")
+        self.db_name = os.getenv("DATABASE_NAME")

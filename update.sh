@@ -34,17 +34,15 @@ bash clean.sh
 
 # Keep local changes
 git stash
+
+# Update repo from Git
 git pull
 
-# # Update submodules (schemas)
+# Update submodules (schemas) if needed (uncomment)
 # git submodule update --remote --merge
 
 # Add existing changes (username/password)
 git stash pop
-
-# Update Python packages in eve/requirements.txt
-# This requires pur on the host system!
-pur -r eve/requirements.txt
 
 # Build and run docker environment, as a background process
 docker-compose up -d --build
