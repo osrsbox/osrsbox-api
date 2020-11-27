@@ -36,7 +36,6 @@ services:
       MONDODB_LOG_DIR: /dev/null
     volumes:
       - ./mongo/create-database.sh:/docker-entrypoint-initdb.d/create-database.sh:ro
-      - mongodata:/data/db
     networks:
       - backend
 
@@ -57,7 +56,6 @@ services:
       PROJECT_USERNAME: ${PROJECT_USERNAME}
       PROJECT_PASSWORD: ${PROJECT_PASSWORD}
     volumes:
-      - evedata:/var/www
       - ./eve:/var/www/eve
       - ./eve/scripts:/scripts
     depends_on:
@@ -67,18 +65,17 @@ services:
       - backend
 
   nginx:
-    build:
-      context: nginx
-      dockerfile: Dockerfile
     container_name: osrsbox-api-nginx
-    image: alpine:latest
+    image: nginx:stable-alpine
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
+      - ./nginx/conf.d/app.conf:/etc/nginx/conf.d/default.conf
+      # - ./nginx/conf.d/app.dev.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/app:/usr/share/nginx/html/
       - /etc/letsencrypt/:/etc/nginx/certs/
-      - nginxdata:/var/log/nginx
     depends_on:
       - eve
     networks:
@@ -89,11 +86,3 @@ networks:
     driver: bridge
   backend:
     driver: bridge
-
-volumes:
-  mongodata:
-    driver: local
-  evedata:
-    driver: local
-  nginxdata:
-    driver: local

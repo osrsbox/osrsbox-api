@@ -22,7 +22,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 '
 docker-compose down
-docker volume prune -f
 docker image rm python:3.7-alpine
-docker image rm alpine:latest
+docker image rm nginx:stable-alpine
 docker image rm mongo:latest

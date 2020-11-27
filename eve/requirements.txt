@@ -1,4 +1,4 @@
 Eve==1.1.4
 Eve-Swagger==0.1.3
 flask-swagger-ui==3.36.0
-osrsbox==1.4.2
+osrsbox

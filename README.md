@@ -129,7 +129,7 @@ git clone --recursive https://github.com:osrsbox/osrsbox-api.git
 
 This repository, and the Docker configuration, is specifically implemented to build on the `api.osrsbox.com` server. This means that certain configuration options have been made that are for the live (production) environment. The following file change is required to run the API locally in development mode:
 
-- `nginx/Dockerfile`: On lines 51 and 53, there are `COPY` commands for two different NGINX configurations files - one for production and one for development. If in development mode, make sure you are using the `app.dev.conf` configuration file. More information is documented in this file.
+- `docker-compose.yml`: On lines 75 and 76, there are two volumes that docker-compose will try and mount - either the `app.dev.conf` (development) or `app.conf` (production) configuration files. This repo specifies the `app.conf` file, with the other commented out. If running locally, just switch how they are commented (uncomment the dev conf file, and comment the prod conf file).
 
 ### Configue Accounts
 
