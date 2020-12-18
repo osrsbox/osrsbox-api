@@ -29,7 +29,7 @@ from eve import Eve
 from eve.auth import BasicAuth
 from eve.io.mongo import Validator
 from eve_swagger import get_swagger_blueprint
-from flask_swagger_ui import get_swaggerui_blueprint
+from eve_swagger import add_documentation
 from flask import jsonify
 
 
@@ -74,7 +74,11 @@ class SCryptAuth(BasicAuth):
         return password_base64 == account["password"]
 
 
-# Start by configuring environment (production/development)
+# Initialize Eve app, and attach modified validator and auth
+app = Eve(validator=MyValidator,
+          auth=SCryptAuth)
+
+# Configure environment (production/development)
 environment = "dev"
 if "APP_ENV" in os.environ:
     environment = os.environ["APP_ENV"]
@@ -87,6 +91,9 @@ else:
     host = "127.0.0.1"
     port = 5000
     API_URL = f"http://{host}/api-docs"
+
+# Set URL for Swagger UI
+SWAGGER_URL = "/swaggerui"
 
 # Set Swagger configuration
 SWAGGER_CONFIG = {
@@ -104,30 +111,22 @@ SWAGGER_CONFIG = {
     "schemes": ["https"],
 }
 
-# If dev environment, use HTTP
-if environment != "prod":
+# If dev environment, use HTTP for swagger
+if environment == "dev":
     SWAGGER_CONFIG["schemes"] = ["http"]
 
-# Set URL for Swagger UI
-SWAGGER_URL = "/swaggerui"
-
-# Using flask_swagger_ui, create Swagger UI blueprint
-swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL,
-                                              API_URL,
-                                              config=SWAGGER_CONFIG,
-                                              )
-
-# Initialize Eve app, and attach modified validator and auth
-app = Eve(validator=MyValidator,
-          auth=SCryptAuth)
-
-# Using eve-swagger, generate /api-docs JSON for Swagger UI
 swagger = get_swagger_blueprint()
-app.register_blueprint(swagger)
 
-# Using flask_swagger_ui, generate Swagger UI web interface
-app.register_blueprint(swaggerui_blueprint,
-                       url_prefix=SWAGGER_URL)
+# Update documentation: Fix invalid warnings
+add_documentation(swagger, {"components": {"parameters": {"Item_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {"Equipment_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {"Weapon_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {"Monster_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {"Prayer_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {"Icons_item_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {"Icons_prayer_id": {"schema": {"type": "string"}}}}})
+
+app.register_blueprint(swagger)
 
 # Set Swagger UI information to the specific configuration
 app.config["SWAGGER_INFO"] = SWAGGER_CONFIG
