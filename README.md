@@ -122,7 +122,7 @@ You can set up your own local API using the following instructions. These instru
 Start by cloning this repository:
 
 ```
-git clone --recursive https://github.com:osrsbox/osrsbox-api.git
+git clone --recursive https://github.com/osrsbox/osrsbox-api.git
 ```
 
 ### Configure Development Environment
