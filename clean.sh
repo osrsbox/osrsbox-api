@@ -21,7 +21,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 '
+docker-compose stop
 docker-compose down
+docker image rm mongo:latest
 docker image rm python:3.7-alpine
 docker image rm nginx:stable-alpine
-docker image rm mongo:latest
+docker volume prune -f
+docker system prune -a

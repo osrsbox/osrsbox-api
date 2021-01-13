@@ -27,9 +27,7 @@ date=$(date +'%m-%d-%Y')
 # Dump docker nginx logs
 docker logs osrsbox-api-nginx >> ~/nginx-$date.log 2>&1
 
-# Stop all docker containers
-docker-compose stop
-
+# Clean docker environment
 bash clean.sh
 
 # Keep local changes
