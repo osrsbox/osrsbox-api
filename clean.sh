@@ -27,4 +27,4 @@ docker image rm mongo:latest
 docker image rm python:3.7-alpine
 docker image rm nginx:stable-alpine
 docker volume prune -f
-docker system prune -a
+docker system prune -a -f
