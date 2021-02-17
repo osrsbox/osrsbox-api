@@ -97,7 +97,7 @@ with open(schema_file_path) as f:
 # Define monsters resource
 monsters = {
     "item_lookup_field": "id",
-    "item_url": 'regex("[0-9]{1,4}")',
+    "item_url": 'regex("[0-9]{1,5}")',
     "schema": monster_schema_data,
 }
 
