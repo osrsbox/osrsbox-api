@@ -79,21 +79,13 @@ app = Eve(validator=MyValidator,
           auth=SCryptAuth)
 
 # Configure environment (production/development)
-environment = "dev"
-if "APP_ENV" in os.environ:
-    environment = os.environ["APP_ENV"]
-
+environment = os.environ["APP_ENV"]
 if environment == "prod":
-    host = "api.osrsbox.com"
+    host = "https://api.osrsbox.com"
     port = 5000
-    API_URL = f"https://{host}/api-docs"
-else:
-    host = "127.0.0.1"
+if environment == "dev":
+    host = "http://127.0.0.1"
     port = 5000
-    API_URL = f"http://{host}/api-docs"
-
-# Set URL for Swagger UI
-SWAGGER_URL = "/swaggerui"
 
 # Set Swagger configuration
 SWAGGER_CONFIG = {
@@ -118,13 +110,20 @@ if environment == "dev":
 swagger = get_swagger_blueprint()
 
 # Update documentation: Fix invalid warnings
-add_documentation(swagger, {"components": {"parameters": {"Item_id": {"schema": {"type": "string"}}}}})
-add_documentation(swagger, {"components": {"parameters": {"Equipment_id": {"schema": {"type": "string"}}}}})
-add_documentation(swagger, {"components": {"parameters": {"Weapon_id": {"schema": {"type": "string"}}}}})
-add_documentation(swagger, {"components": {"parameters": {"Monster_id": {"schema": {"type": "string"}}}}})
-add_documentation(swagger, {"components": {"parameters": {"Prayer_id": {"schema": {"type": "string"}}}}})
-add_documentation(swagger, {"components": {"parameters": {"Icons_item_id": {"schema": {"type": "string"}}}}})
-add_documentation(swagger, {"components": {"parameters": {"Icons_prayer_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {
+                  "Item_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {
+                  "Equipment_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {
+                  "Weapon_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {
+                  "Monster_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {
+                  "Prayer_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {
+                  "Icons_item_id": {"schema": {"type": "string"}}}}})
+add_documentation(swagger, {"components": {"parameters": {
+                  "Icons_prayer_id": {"schema": {"type": "string"}}}}})
 
 app.register_blueprint(swagger)
 

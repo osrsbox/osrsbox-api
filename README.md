@@ -144,7 +144,7 @@ MONGO_PORT=27017
 DATABASE_NAME=osrsbox-db
 PROJECT_USERNAME=puser
 PROJECT_PASSWORD=ppasswd
-ENVIRONMENT=prod
+APP_ENV=prod
 ```
 
 Make sure to change the username and password values.

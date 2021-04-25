@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '
 docker-compose stop
 docker-compose down
-docker image rm mongo:latest
+docker image rm mongo
 docker image rm python:3.7-alpine
 docker image rm nginx:stable-alpine
 docker volume prune -f

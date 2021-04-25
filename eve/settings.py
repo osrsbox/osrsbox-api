@@ -42,12 +42,10 @@ URL_PREFIX = ""
 RENDERERS = ["eve.render.JSONRenderer", ]
 
 # Enable GET, POST, and DELETE for collections
-# RESOURCE_METHODS = ["GET", "POST"]
-RESOURCE_METHODS = ["GET"]
+RESOURCE_METHODS = ["GET", "POST", "DELETE"]
 
 # Enable GET, PUT and DELETE for items in collections
-# ITEM_METHODS = ["GET", "PUT"]
-ITEM_METHODS = ["GET"]
+ITEM_METHODS = ["GET", "PUT", "DELETE"]
 
 # Lock down all endpoints, apart from GET requests
 PUBLIC_METHODS = ["GET"]
